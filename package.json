@@ -1,0 +1,29 @@
+{
+  "name": "izdelie-27",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/upisfree/izdelie-27.git"
+  },
+  "author": "upisfree",
+  "bugs": {
+    "url": "https://github.com/upisfree/izdelie-27/issues"
+  },
+  "homepage": "https://github.com/upisfree/izdelie-27#readme",
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.2.1",
+    "http-server": "^0.11.1",
+    "typescript": "^3.5.2",
+    "webpack": "^4.35.2",
+    "webpack-cli": "^3.3.5"
+  }
+}
