@@ -1,7 +1,7 @@
 import ASSETS from './assets';
 import tick from './engine/tick';
 import resize from './engine/platform/resize';
-import keyboard from './engine/platform/keyboard';
+import { initKeyboard, addKeyboardListener } from './engine/platform/keyboard';
 import Vector2 from './engine/math/vector2';
 import Camera from './engine/camera';
 import Level from './engine/level';
@@ -42,17 +42,22 @@ function init() {
 
   console.log(level, player, camera, minimap);
 
-  for (let i = 0; i < 100; i++) {
-    new NPC(
-      ASSETS.TEXTURES['npc'].bitmap,
-      new Vector2(Math.ceil(levelSize * Math.random()), Math.ceil(levelSize * Math.random())),
-      level
-    );
-  }
+  new NPC(
+    ASSETS.TEXTURES['npc'].bitmap,
+    new Vector2(Math.ceil(levelSize / 2), Math.ceil(levelSize / 3)),
+    level
+  );
 
-  keyboard([
-    player.moveWithKeyboard.bind(player)
-  ]);
+  // for (let i = 0; i < 100; i++) {
+  //   new NPC(
+  //     ASSETS.TEXTURES['npc'].bitmap,
+  //     new Vector2(Math.ceil(levelSize * Math.random()), Math.ceil(levelSize * Math.random())),
+  //     level
+  //   );
+  // }
+
+  initKeyboard();
+  addKeyboardListener(player.onKeyboardTick.bind(player));
 
   tick(() => {
     camera.render();

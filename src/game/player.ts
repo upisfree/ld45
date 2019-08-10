@@ -2,14 +2,15 @@ import { DIRECTION, KEY_CODE } from '../engine/const';
 import Vector2 from '../engine/math/vector2';
 import Angle from '../engine/math/angle';
 import Camera from '../engine/camera';
+import keyboard from '../engine/platform/keyboard';
 
 class Player {
   camera: Camera;
   position: Vector2;
   rotation: number = 0; // в радианах
 
-  moveSpeed: number = 0.5;
-  rotateSpeed: number = Math.PI / 24;
+  moveSpeed: number = 0.05;
+  rotateSpeed: number = Math.PI / 128;
 
   constructor(
     camera: Camera,
@@ -65,37 +66,23 @@ class Player {
     this.camera.rotation = Angle.normalize(this.rotation);
   }
 
-  moveWithKeyboard(event: KeyboardEvent): void {
-    let direction;
-
-    switch (event.keyCode) {
-      case KEY_CODE.ARROW_UP:
-      case KEY_CODE.W:
-        direction = DIRECTION.UP;
-
-        break;
-
-      case KEY_CODE.ARROW_LEFT:
-      case KEY_CODE.A:
-        direction = DIRECTION.LEFT;
-
-        break;
-
-      case KEY_CODE.ARROW_DOWN:
-      case KEY_CODE.S:
-        direction = DIRECTION.DOWN;
-
-        break;
-
-      case KEY_CODE.ARROW_RIGHT:
-      case KEY_CODE.D:
-        direction = DIRECTION.RIGHT;
-
-        break;
+  onKeyboardTick(): void {
+    // TODO: check indexOf vs. includes perfomance?
+    // как тут покрасивше организвовать код?
+    if (keyboard.keyCodes.includes(KEY_CODE.ARROW_UP) || keyboard.keyCodes.includes(KEY_CODE.W)) {
+      this.move(DIRECTION.UP);
     }
 
-    if (direction !== undefined) {
-      this.move(direction);
+    if (keyboard.keyCodes.includes(KEY_CODE.ARROW_LEFT) || keyboard.keyCodes.includes(KEY_CODE.A)) {
+      this.move(DIRECTION.LEFT);
+    }
+
+    if (keyboard.keyCodes.includes(KEY_CODE.ARROW_DOWN) || keyboard.keyCodes.includes(KEY_CODE.S)) {
+      this.move(DIRECTION.DOWN);
+    }
+
+    if (keyboard.keyCodes.includes(KEY_CODE.ARROW_RIGHT) || keyboard.keyCodes.includes(KEY_CODE.D)) {
+      this.move(DIRECTION.RIGHT);
     }
   }
 }
