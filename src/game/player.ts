@@ -63,8 +63,10 @@ class Player {
         break;
     }
 
+    this.rotation = Angle.normalize(this.rotation);
+
     this.camera.position = this.position;
-    this.camera.rotation = Angle.normalize(this.rotation);
+    this.camera.rotation = this.rotation;
   }
 
   onKeyboardTick(): void {

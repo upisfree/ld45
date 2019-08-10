@@ -23,7 +23,7 @@ class Camera {
   position: Vector2 = new Vector2(0, 0);
   rotation: number = 0;
   level: Level;
-  fov: number; // всё в радианах!
+  fov: number;
 
   zBuffer: number[];
 
@@ -42,7 +42,7 @@ class Camera {
 
   constructor(
     level: Level,
-    fov: number = Math.PI / 3
+    fov: number = Math.PI / 4
   ) {
     this.level = level;
     this.fov = fov;
@@ -64,7 +64,7 @@ class Camera {
   public render(): void {
     this.rays = this.getRays();
 
-    this.drawGround();
+    // this.drawGround();
     this.drawWalls(this.rays);
     this.drawSprites(this.rays);
   }
@@ -77,7 +77,7 @@ class Camera {
       let s: WALL_SIDE;
       let t: WALL_TYPE;
 
-      let r: number = this.rotation - this.fov / 2 + this.fov * i / this.raysCount;
+      let r: number = Angle.normalize(this.rotation - this.fov / 2 + this.fov * i / this.raysCount);
 
       let a: Vector2 = new Vector2(
         this.position.x,
@@ -119,7 +119,7 @@ class Camera {
       rays.push({
         a: a,
         b: b,
-        distance: d, // TODO: починить фишай!!!
+        distance: d * Math.cos(r - this.rotation),
         rotation: r,
         side: s,
         type: t
@@ -224,7 +224,7 @@ class Camera {
       let sprite = this.level.sprites[i];
       
       let rotation = Math.atan2(sprite.position.y - this.position.y, sprite.position.x - this.position.x);
-      let distance = Vector2.distance(this.position, sprite.position);
+      let distance = Vector2.distance(this.position, sprite.position); // TODO: а тут фишай есть?
 
       // пока исключительно квадратные текстуры
       let width = this.wh / distance;

@@ -9,6 +9,10 @@ class Bitmap {
     this.width = width;
     this.height = height;
   }
+
+  // render() {
+  //
+  // }
 }
 
 export default Bitmap;

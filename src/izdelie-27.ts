@@ -48,7 +48,7 @@ function init() {
 
   new NPC(
     ASSETS.TEXTURES['npc'].bitmap,
-    new Vector2(Math.ceil(levelSize / 2), Math.ceil(levelSize / 3)),
+    new Vector2(Math.ceil(levelSize * Math.random()), Math.ceil(levelSize * Math.random())),
     level
   );
 
