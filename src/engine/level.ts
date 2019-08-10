@@ -59,7 +59,7 @@ class Level {
 
   public randomize = function() {
     for (let i = 0; i < this.size * this.size; i++) {
-      this.walls[i] = Math.random() < 0.01 ? 1 : 0;
+      this.walls[i] = Math.random() < 0.25 ? 1 : 0;
     }
   }
 }

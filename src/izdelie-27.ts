@@ -2,6 +2,7 @@ import ASSETS from './assets';
 import tick from './engine/tick';
 import resize from './engine/platform/resize';
 import { initKeyboard, addKeyboardListener } from './engine/platform/keyboard';
+import { initMouse, addMouseListener } from './engine/platform/mouse';
 import Vector2 from './engine/math/vector2';
 import Camera from './engine/camera';
 import Level from './engine/level';
@@ -35,6 +36,9 @@ function init() {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   ]);
 
+  // let levelSize = 128;
+  // let levelData = new Uint8Array(levelSize);
+
   let level = new Level(levelSize, levelData, [], false);
   let camera = new Camera(level);
   let player = new Player(camera, new Vector2(levelSize / 2, levelSize / 2), Math.PI / -2);
@@ -58,6 +62,9 @@ function init() {
 
   initKeyboard();
   addKeyboardListener(player.onKeyboardTick.bind(player));
+
+  initMouse();
+  addMouseListener(player.onMouseTick.bind(player));
 
   tick(() => {
     camera.render();

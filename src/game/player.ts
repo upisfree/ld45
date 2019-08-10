@@ -3,6 +3,7 @@ import Vector2 from '../engine/math/vector2';
 import Angle from '../engine/math/angle';
 import Camera from '../engine/camera';
 import keyboard from '../engine/platform/keyboard';
+import mouse from '../engine/platform/mouse';
 
 class Player {
   camera: Camera;
@@ -83,6 +84,14 @@ class Player {
 
     if (keyboard.keyCodes.includes(KEY_CODE.ARROW_RIGHT) || keyboard.keyCodes.includes(KEY_CODE.D)) {
       this.move(DIRECTION.RIGHT);
+    }
+  }
+
+  onMouseTick(): void {
+    if (mouse.movementX > 0) {
+      this.move(DIRECTION.RIGHT);
+    } else if (mouse.movementX < 0) {
+      this.move(DIRECTION.LEFT);
     }
   }
 }
