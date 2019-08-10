@@ -75,7 +75,7 @@ class Camera {
     for (let i = 0; i < this.raysCount; i++) {
       let d: number = -1;
       let s: WALL_SIDE;
-      let t: WALL_TYPE;
+      let t: WALL_TYPE = WALL_TYPE.VOID;
 
       let r: number = Angle.normalize(this.rotation - this.fov / 2 + this.fov * i / this.raysCount);
 
@@ -114,12 +114,16 @@ class Camera {
 
           break;
         };
-      }
+      };
+
+      if (d !== -1) {
+        d *= Math.cos(r - this.rotation);
+      };
 
       rays.push({
         a: a,
         b: b,
-        distance: d * Math.cos(r - this.rotation),
+        distance: d,
         rotation: r,
         side: s,
         type: t

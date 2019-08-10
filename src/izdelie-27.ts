@@ -36,10 +36,10 @@ function init() {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   ]);
 
-  // let levelSize = 128;
+  // let levelSize = 16;
   // let levelData = new Uint8Array(levelSize);
 
-  let level = new Level(levelSize, levelData, [], false);
+  let level = new Level(levelSize, levelData, [], true);
   let camera = new Camera(level);
   let player = new Player(camera, new Vector2(levelSize / 2, levelSize / 2), Math.PI / -2);
   let minimap = new Minimap(level, camera, new Vector2(10, 10));

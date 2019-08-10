@@ -54,7 +54,13 @@ class Level {
       return -1;
     };
 
-    return this.walls[y * this.size + x];
+    let t = this.walls[y * this.size + x];
+
+    if (t === undefined || t === null) {
+      return -1;
+    } else {
+      return t;
+    }
   }
 
   public randomize = function() {
