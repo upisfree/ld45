@@ -33,6 +33,7 @@ class Camera {
   raysCount: number = 256;
 
   rayWidth: number;
+  roundedRayWidth: number;
   ww: number;
   wh: number;
 
@@ -60,16 +61,19 @@ class Camera {
 
   public render(): void {
     this.rays = this.getRays();
+    this.zBuffer = [];
 
     this.drawGround();
     this.drawWalls();
     this.drawSprites();
+    this.drawZBuffer();
   }
 
   public resize(): void {
     this.ww = canvas.width;
     this.wh = canvas.height;
     this.rayWidth = this.ww / this.rays.length;
+    this.roundedRayWidth = Math.ceil(this.rayWidth);
   }
 
   private getRays(): Ray[] {
@@ -140,14 +144,15 @@ class Camera {
     for (let i = 0; i < this.rays.length; i++) {
       let ray = this.rays[i];
 
+      // заполняем zbuffer — т.к. мы рендерим по одной полоске, его надо вручную продлять
+      // for (let j = this.roundedRayWidth * i; j < this.roundedRayWidth * (i + 1); j++) {
+      for (let j = this.roundedRayWidth * i; j < this.roundedRayWidth * (i + 1); j++) {
+        this.zBuffer[j] = ray.distance;
+      };
+
       // если пустота, то не рисуем
       if (ray.distance === -1) {
         continue;
-      };
-
-      // заполняем zbuffer — т.к. мы рендерим по одной полоске, его надо вручную продлять
-      for (let j = this.rayWidth * i; j < this.rayWidth * (i + 1); j++) {
-        this.zBuffer[j] = ray.distance;
       };
 
       let bitmap = WALL_TEXTURE[ray.type].bitmap;
@@ -243,7 +248,7 @@ class Camera {
       for (let j = startX; j < endX; j += this.rayWidth) {
         let wallStripe = this.zBuffer[Math.ceil(j)];
 
-        if (wallStripe && (wallStripe < distance)) {
+        if (wallStripe !== undefined && wallStripe !== null && wallStripe < distance) {
           continue;
         };
 
@@ -269,6 +274,22 @@ class Camera {
       new Color(1, 1, 1),
       new Color(0, 0, 0)
     );
+  }
+
+  private drawZBuffer(): void {
+    // console.log(this.ww, this.zBuffer.length);
+
+    let h = 15;
+
+    for (let i = 0; i < this.zBuffer.length; i++) {
+      let v = this.zBuffer[i] / this.rayDistance;
+
+      gl.drawLine(
+        new Vector2(i, this.wh / 2 - h / v),
+        new Vector2(i, this.wh / 2 + h / v),
+        new Color(v, v, v),
+      );
+    }
   }
 }
 
