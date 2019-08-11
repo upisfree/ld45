@@ -1,6 +1,7 @@
 import ASSETS from './assets';
 import tick from './engine/tick';
 import resize from './engine/platform/resize';
+import { canvas } from './engine/platform/canvas';
 import { initKeyboard, addKeyboardListener } from './engine/platform/keyboard';
 import { initMouse, addMouseListener } from './engine/platform/mouse';
 import Vector2 from './engine/math/vector2';
@@ -14,8 +15,6 @@ import NPC from './game/npc';
 load(init);
 
 function init() {
-  resize();
-
   let levelSize = 16;
   let levelData = new Uint8Array([
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -30,16 +29,16 @@ function init() {
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-    1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1,
+    1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1,
   ]);
 
   // let levelSize = 16;
   // let levelData = new Uint8Array(levelSize);
 
-  let level = new Level(levelSize, levelData, [], true);
+  let level = new Level(levelSize, levelData, [], false);
   let camera = new Camera(level);
   let player = new Player(camera, new Vector2(levelSize / 2, levelSize / 2), Math.PI / -2);
   let minimap = new Minimap(level, camera, new Vector2(10, 10));
@@ -48,7 +47,7 @@ function init() {
 
   new NPC(
     ASSETS.TEXTURES['npc'].bitmap,
-    new Vector2(Math.ceil(levelSize * Math.random()), Math.ceil(levelSize * Math.random())),
+    new Vector2(Math.ceil(levelSize / 2), Math.ceil(levelSize / 3)),
     level
   );
 
@@ -70,10 +69,13 @@ function init() {
     camera.render();
     minimap.render();
 
-    level.npcs.forEach(npc => npc.update());
+    // level.npcs.forEach(npc => npc.update());
 
     // camera.fov += Math.cos(performance.now() / 400) / 50;
   });
+
+  window.addEventListener('resize', resize.bind(this, canvas, camera));
+  resize(canvas, camera);
 };
 
 function load(callback) {

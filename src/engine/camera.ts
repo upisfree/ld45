@@ -25,13 +25,14 @@ class Camera {
   level: Level;
   fov: number;
 
-  zBuffer: number[];
+  zBuffer: number[] = [];
 
-  rays: Ray[]; // храню для миникарты
+  rays: Ray[] = []; // храню для миникарты
   rayDistance: number = 15;
   rayStep: number = 0.01;
   raysCount: number = 256;
 
+  rayWidth: number;
   ww: number;
   wh: number;
 
@@ -47,11 +48,7 @@ class Camera {
     this.level = level;
     this.fov = fov;
 
-    this.zBuffer = [];
-
-    // TODO: update on resize?
-    this.ww = canvas.width;
-    this.wh = canvas.height;
+    this.resize();
 
     if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
       this.nBitmap = ASSETS.TEXTURES['n'].bitmap;
@@ -64,9 +61,15 @@ class Camera {
   public render(): void {
     this.rays = this.getRays();
 
-    // this.drawGround();
-    this.drawWalls(this.rays);
-    this.drawSprites(this.rays);
+    this.drawGround();
+    this.drawWalls();
+    this.drawSprites();
+  }
+
+  public resize(): void {
+    this.ww = canvas.width;
+    this.wh = canvas.height;
+    this.rayWidth = this.ww / this.rays.length;
   }
 
   private getRays(): Ray[] {
@@ -133,34 +136,34 @@ class Camera {
     return rays;
   }
 
-  private drawWalls(rays: Ray[]): void {
-    let rayWidth = Math.ceil(this.ww / rays.length);
+  private drawWalls(): void {
+    for (let i = 0; i < this.rays.length; i++) {
+      let ray = this.rays[i];
 
-    for (let i = 0; i < rays.length; i++) {
       // если пустота, то не рисуем
-      if (rays[i].distance === -1) {
+      if (ray.distance === -1) {
         continue;
       };
 
       // заполняем zbuffer — т.к. мы рендерим по одной полоске, его надо вручную продлять
-      for (let j = rayWidth * i; j < rayWidth * (i + 1); j++) {
-        this.zBuffer[j] = rays[i].distance;
+      for (let j = this.rayWidth * i; j < this.rayWidth * (i + 1); j++) {
+        this.zBuffer[j] = ray.distance;
       };
 
-      let bitmap = WALL_TEXTURE[rays[i].type].bitmap;
+      let bitmap = WALL_TEXTURE[ray.type].bitmap;
 
-      let rotation = rays[i].rotation;
-      let z = rays[i].distance / this.rayDistance;
-      let height = this.wh / rays[i].distance;
+      let rotation = ray.rotation;
+      let z = ray.distance / this.rayDistance;
+      let height = this.wh / ray.distance;
 
       let fractional;
-      let fractionalX = rays[i].b.x % 1;
-      let fractionalY = rays[i].b.y % 1;
+      let fractionalX = ray.b.x % 1;
+      let fractionalY = ray.b.y % 1;
 
       // понимаем какая стена и в зависимости от этого пользуемся данными от округления
       // позиции падения взгляда, чтобы определить насколько нам нужно сдвинуться в текстуре
       // чтобы получить позицию текстуры полоски
-      switch (rays[i].side) {
+      switch (ray.side) {
         case WALL_SIDE.NORTH:
           if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
             bitmap = this.nBitmap;
@@ -209,16 +212,14 @@ class Camera {
         bitmap,
         new Vector2(textureX, 0),
         new Vector2(1, bitmap.height),
-        new Vector2(rayWidth * i, this.wh / 2 - height / 2),
-        new Vector2(rayWidth, height),
+        new Vector2(this.rayWidth * i, this.wh / 2 - height / 2),
+        new Vector2(this.rayWidth, height),
         0
       );
     }
   }
 
-  private drawSprites(rays: Ray[]): void {
-    let rayWidth = Math.ceil(this.ww / rays.length);
-
+  private drawSprites(): void {
     // сортируем спрайты по дальности от игрока, чтобы правильно отрисовать
     this.level.sprites.sort((a, b) => {
       return Vector2.distance(this.position, b.position) - Vector2.distance(this.position, a.position);
@@ -228,7 +229,7 @@ class Camera {
       let sprite = this.level.sprites[i];
       
       let rotation = Math.atan2(sprite.position.y - this.position.y, sprite.position.x - this.position.x);
-      let distance = Vector2.distance(this.position, sprite.position); // TODO: а тут фишай есть?
+      let distance = Vector2.distance(this.position, sprite.position);
 
       // пока исключительно квадратные текстуры
       let width = this.wh / distance;
@@ -239,8 +240,7 @@ class Camera {
 
       let y = this.wh / 2 - height / 2;
 
-      // TODO: надо рисовать не по одному пикселю, а по ширине спрайта луча!
-      for (let j = startX; j < endX; j++) {
+      for (let j = startX; j < endX; j += this.rayWidth) {
         let wallStripe = this.zBuffer[Math.ceil(j)];
 
         if (wallStripe && (wallStripe < distance)) {
@@ -252,9 +252,9 @@ class Camera {
         gl.drawImage(
           sprite.bitmap,
           new Vector2(textureX, 0),
-          new Vector2(1, sprite.bitmap.height),
+          new Vector2(this.rayWidth, sprite.bitmap.height),
           new Vector2(j, y),
-          new Vector2(1, height),
+          new Vector2(this.rayWidth, height),
           0
         );
       }

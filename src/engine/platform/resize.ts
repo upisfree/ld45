@@ -1,10 +1,11 @@
 import { canvas } from './canvas';
+import Camera from '../camera';
 
-function onresize() {
+function onresize(canvas: HTMLCanvasElement, camera: Camera) {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-};
 
-window.addEventListener('resize', onresize);
+  camera.resize();
+};
 
 export default onresize;
