@@ -25,15 +25,14 @@ class Camera {
   level: Level;
   fov: number;
 
-  zBuffer: number[] = [];
+  zBuffer: Float32Array;
 
-  rays: Ray[] = []; // храню для миникарты
+  rays: Ray[] = [];
   rayDistance: number = 15;
   rayStep: number = 0.01;
   raysCount: number = 256;
 
   rayWidth: number;
-  roundedRayWidth: number;
   ww: number;
   wh: number;
 
@@ -61,7 +60,7 @@ class Camera {
 
   public render(): void {
     this.rays = this.getRays();
-    this.zBuffer = [];
+    this.zBuffer = new Float32Array(this.ww);
 
     this.drawGround();
     this.drawWalls();
@@ -73,7 +72,8 @@ class Camera {
     this.ww = canvas.width;
     this.wh = canvas.height;
     this.rayWidth = this.ww / this.rays.length;
-    this.roundedRayWidth = Math.ceil(this.rayWidth);
+
+    this.zBuffer = new Float32Array(this.ww);
   }
 
   private getRays(): Ray[] {
@@ -145,8 +145,7 @@ class Camera {
       let ray = this.rays[i];
 
       // заполняем zbuffer — т.к. мы рендерим по одной полоске, его надо вручную продлять
-      // for (let j = this.roundedRayWidth * i; j < this.roundedRayWidth * (i + 1); j++) {
-      for (let j = this.roundedRayWidth * i; j < this.roundedRayWidth * (i + 1); j++) {
+      for (let j = Math.ceil(this.rayWidth * i); j < this.rayWidth * (i + 1); j++) {
         this.zBuffer[j] = ray.distance;
       };
 
@@ -236,6 +235,10 @@ class Camera {
       let rotation = Math.atan2(sprite.position.y - this.position.y, sprite.position.x - this.position.x);
       let distance = Vector2.distance(this.position, sprite.position);
 
+      if (distance > this.rayDistance) {
+        continue;
+      };
+
       // пока исключительно квадратные текстуры
       let width = this.wh / distance;
       let height = this.wh / distance;
@@ -248,7 +251,12 @@ class Camera {
       for (let j = startX; j < endX; j += this.rayWidth) {
         let wallStripe = this.zBuffer[Math.ceil(j)];
 
-        if (wallStripe !== undefined && wallStripe !== null && wallStripe < distance) {
+        // -1 не учитывается
+        if (wallStripe !== undefined &&
+            wallStripe !== null &&
+            wallStripe < distance &&
+            wallStripe !== -1
+        ) {
           continue;
         };
 
@@ -277,8 +285,6 @@ class Camera {
   }
 
   private drawZBuffer(): void {
-    // console.log(this.ww, this.zBuffer.length);
-
     let h = 15;
 
     for (let i = 0; i < this.zBuffer.length; i++) {
