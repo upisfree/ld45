@@ -30,7 +30,7 @@ class Camera {
   rays: Ray[] = [];
   rayDistance: number = 15;
   rayStep: number = 0.01;
-  raysCount: number = 256;
+  raysCount: number = 128;
 
   rayWidth: number;
   ww: number;
@@ -220,6 +220,14 @@ class Camera {
         new Vector2(this.rayWidth, height),
         0
       );
+
+      // if (fog) {
+      // gl.drawRect(
+      //   new Vector2(this.rayWidth * i, this.wh / 2 - height / 2),
+      //   new Vector2(this.rayWidth + 10, height),
+      //   0,
+      //   new Color(1, 1, 1, z + 0.35)
+      // );
     }
   }
 

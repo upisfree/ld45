@@ -6,7 +6,7 @@ import Bitmap from './bitmap';
 namespace gl {
   // эта версия без поворота, нужно проверить, насколько она быстрее версии с поворотом
   // export function drawRect(position: Vector2, size: Vector2, color: Color): void {
-  //   context.fillStyle = color.getHexString();
+  //   context.fillStyle = color.getRGBAString();
   //   context.fillRect(position.x, position.y, size.width, size.height);
   // }
 
@@ -26,7 +26,7 @@ namespace gl {
     context.rotate(rotation);
 
     if (color instanceof Color) {
-      color = color.getHexString();
+      color = color.getRGBAString();
     };
 
     context.fillStyle = color;
@@ -36,9 +36,6 @@ namespace gl {
 
     context.restore();
   }
-
-  // TODO: переименовать аргументы?
-  //       см. https://developer.mozilla.org/ru/docs/Web/API/CanvasRenderingContext2D/drawImage
   export function drawImage(
     bitmap: Bitmap,
     bitmapPosition: Vector2,
@@ -77,7 +74,7 @@ namespace gl {
     let gradient = context.createLinearGradient(0, 0, 0, size.height);
     
     for (let i = 0; i < colors.length; i++) {
-      gradient.addColorStop(i, colors[i].getHexString());
+      gradient.addColorStop(i, colors[i].getRGBAString());
     }
 
     drawRect(position, size, rotation, gradient);
@@ -92,7 +89,7 @@ namespace gl {
 
     context.beginPath();
 
-    context.strokeStyle = color.getHexString();
+    context.strokeStyle = color.getRGBAString();
 
     context.moveTo(v1.x, v1.y);
     context.lineTo(v2.x, v2.y);

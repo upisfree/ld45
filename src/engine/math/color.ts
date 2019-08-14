@@ -1,4 +1,5 @@
 class Color {
+  // TODO: get / set, чтобы держать цвет в 0-1
   public r: number;
   public g: number;
   public b: number;
@@ -11,12 +12,8 @@ class Color {
     this.a = a;
   }
 
-  public getHex(): number {
-    return (this.r * 255) << 16 ^ (this.g * 255) << 8 ^ (this.b * 255) << 0;
-  }
-
-  public getHexString(): string {
-    return '#' + ('000000' + this.getHex().toString(16)).slice(-6);
+  public getRGBAString(): string {
+    return `rgba(${ this.r * 255 }, ${ this.g * 255 }, ${ this.b * 255 }, ${ this.a })`;
   }
 }
 

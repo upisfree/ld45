@@ -5,12 +5,14 @@ import { canvas } from './engine/platform/canvas';
 import { initKeyboard, addKeyboardListener } from './engine/platform/keyboard';
 import { initMouse, addMouseListener } from './engine/platform/mouse';
 import Vector2 from './engine/math/vector2';
+import Color from './engine/math/color';
 import Camera from './engine/camera';
 import Level from './engine/level';
 import Player from './game/player';
 import Minimap from './game/minimap';
 import Bitmap from './engine/bitmap';
 import NPC from './game/npc';
+import gl from './engine/gl';
 
 load(init);
 

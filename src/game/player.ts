@@ -10,8 +10,8 @@ class Player {
   position: Vector2;
   rotation: number = 0; // в радианах
 
-  moveSpeed: number = 0.05;
-  rotateSpeed: number = Math.PI / 128;
+  moveSpeed: number = 0.1;
+  rotateSpeed: number = Math.PI / 64;
 
   constructor(
     camera: Camera,
