@@ -5,10 +5,12 @@ import Angle from './math/angle';
 import Color from './math/color';
 import gl from './gl';
 import Player from '../game/player';
-import { default as Level, WALL_TYPE, WALL_TEXTURE } from './level';
+import { default as Level, WALL_TEXTURE } from './level';
 import Bitmap from './bitmap';
 import { WALL_SIDE } from './const';
 import { canvas } from './platform/canvas';
+import WALL_TYPE from '../game/wall-types';
+
 
 export interface Ray {
   a: Vector2;
@@ -67,7 +69,7 @@ class Camera {
     // this.drawSkybox();
     this.drawWalls();
     this.drawSprites();
-    // this.drawZBuffer();
+    this.drawZBuffer();
   }
 
   public resize(): void {

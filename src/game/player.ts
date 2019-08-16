@@ -8,13 +8,19 @@ import mouse from '../engine/platform/mouse';
 class Player {
   camera: Camera;
   position: Vector2;
-  rotation: number = 0; // в радианах
+  rotation: number = 0;
 
-  moveSpeed: number = 0.1;
-  rotateSpeed: number = Math.PI / 64;
+  moveSpeed: number = 0.05;
+  rotateSpeed: number = Math.PI / 256;
   noddlingStabilizationSpeed: number = 20;
   noddlingFrequency: number = 100;
-  noddlingForce: number = 6;
+  noddlingForce: number = 0;
+
+  // moveSpeed: number = 0.1;
+  // rotateSpeed: number = Math.PI / 64;
+  // noddlingStabilizationSpeed: number = 20;
+  // noddlingFrequency: number = 100;
+  // noddlingForce: number = 6;
 
   isMoving: boolean = false;
 
@@ -115,7 +121,7 @@ class Player {
     }
   }
 
-  // возвращаем после хотьбы камеру в нормальное положение
+  // возвращаем камеру после ходьбы в нормальное положение
   private updateHeightOffset(): void {
     if (this.isMoving) {
       return;

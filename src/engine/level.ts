@@ -3,14 +3,7 @@ import Vector2 from './math/vector2';
 import Sprite from './sprite';
 import Bitmap from './bitmap';
 import NPC from '../game/npc';
-
-// TODO: это нужно перенести в другой файл, чтобы отделить данные от движка
-const enum WALL_TYPE {
-  VOID = -1,
-  AIR = 0,
-  LEAVES = 1,
-  MIO = 2,
-};
+import WALL_TYPE from '../game/wall-types';
 
 const WALL_TEXTURE = { };
 
