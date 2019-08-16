@@ -12,6 +12,11 @@ class Player {
 
   moveSpeed: number = 0.1;
   rotateSpeed: number = Math.PI / 64;
+  noddlingStabilizationSpeed: number = 20;
+  noddlingFrequency: number = 100;
+  noddlingForce: number = 6;
+
+  isMoving: boolean = false;
 
   constructor(
     camera: Camera,
@@ -23,9 +28,18 @@ class Player {
     this.rotation = rotation;
   }
 
+  update(): void {
+    this.updateHeightOffset();
+
+    this.isMoving = false;
+  }
+
   move(direction: DIRECTION): void {
     let v;
     let isCollision = false; // TODO: пока нет проверки на столкновение
+    let time = performance.now();
+
+    this.isMoving = true;
 
     switch (direction) {
       case DIRECTION.UP:
@@ -37,6 +51,8 @@ class Player {
         if (!isCollision) {
           this.position = v;
         }
+
+        this.camera.heightOffset -= Math.cos(time / this.noddlingFrequency) * this.noddlingForce;
 
         break;
 
@@ -54,6 +70,8 @@ class Player {
         if (!isCollision) {
           this.position = v;
         }
+
+        this.camera.heightOffset -= Math.cos(time / this.noddlingFrequency) * this.noddlingForce;
 
         break;
 
@@ -94,6 +112,21 @@ class Player {
       this.move(DIRECTION.RIGHT);
     } else if (mouse.movementX < 0) {
       this.move(DIRECTION.LEFT);
+    }
+  }
+
+  // возвращаем после хотьбы камеру в нормальное положение
+  private updateHeightOffset(): void {
+    if (this.isMoving) {
+      return;
+    }
+
+    this.camera.heightOffset = Math.trunc(this.camera.heightOffset);
+
+    if (this.camera.heightOffset > this.noddlingStabilizationSpeed) {
+      this.camera.heightOffset -= this.noddlingStabilizationSpeed;
+    } else if (this.camera.heightOffset < -this.noddlingStabilizationSpeed) {
+      this.camera.heightOffset += this.noddlingStabilizationSpeed;
     }
   }
 }

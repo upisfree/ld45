@@ -27,6 +27,7 @@ const ASSETS = {
     'leaves-1-hq': getEmptyTextureObject(1545, 1024, WALL_TYPE.LEAVES),
     'leaves-2-hq': getEmptyTextureObject(1545, 1024, WALL_TYPE.MIO),
     'npc': getEmptyTextureObject(214, 239),
+    'skybox': getEmptyTextureObject(640, 320),
   },
   SOUNDS: {
 

@@ -21,6 +21,7 @@ export interface Ray {
 
 class Camera {
   position: Vector2 = new Vector2(0, 0);
+  heightOffset: number = 0;
   rotation: number = 0;
   level: Level;
   fov: number;
@@ -62,10 +63,11 @@ class Camera {
     this.rays = this.getRays();
     this.zBuffer = new Float32Array(this.ww);
 
-    this.drawGround();
+    // this.drawGround();
+    // this.drawSkybox();
     this.drawWalls();
     this.drawSprites();
-    this.drawZBuffer();
+    // this.drawZBuffer();
   }
 
   public resize(): void {
@@ -159,6 +161,7 @@ class Camera {
       let rotation = ray.rotation;
       let z = ray.distance / this.rayDistance;
       let height = this.wh / ray.distance;
+      let y = this.wh / 2 - height / 2 + this.heightOffset;
 
       let fractional;
       let fractionalX = ray.b.x % 1;
@@ -216,7 +219,7 @@ class Camera {
         bitmap,
         new Vector2(textureX, 0),
         new Vector2(1, bitmap.height),
-        new Vector2(this.rayWidth * i, this.wh / 2 - height / 2),
+        new Vector2(this.rayWidth * i, y),
         new Vector2(this.rayWidth, height),
         0
       );
@@ -254,7 +257,7 @@ class Camera {
       let startX = (rotation - this.rotation) * (this.ww) / (this.fov) + (this.ww) / 2 - width / 2;
       let endX = startX + width;
 
-      let y = this.wh / 2 - height / 2;
+      let y = this.wh / 2 - height / 2 + this.heightOffset;
 
       for (let j = startX; j < endX; j += this.rayWidth) {
         let wallStripe = this.zBuffer[Math.ceil(j)];
@@ -289,6 +292,30 @@ class Camera {
       0,
       new Color(1, 1, 1),
       new Color(0, 0, 0)
+    );
+  }
+
+  private drawSkybox(): void {
+    let scaleFactor = 4;
+    let skybox = this.level.skybox;
+
+    // let x = this.ww * this.rotation;
+    let x = Math.abs(this.rotation / Math.PI * 2) * -skybox.width;
+    let w = skybox.width * (this.wh / skybox.height) * 2;
+
+    if (x > w - this.ww) {
+      x += w;
+    }
+
+    // console.log(x, skybox.width);
+
+    gl.drawImage(
+      skybox,
+      new Vector2(x, 0),
+      new Vector2(skybox.width, skybox.height),
+      new Vector2(0, 0),
+      new Vector2(this.ww, this.wh / 2),
+      0
     );
   }
 
