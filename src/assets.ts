@@ -26,8 +26,9 @@ const ASSETS = {
     'w': getEmptyTextureObject(64, 64),
     'leaves-1-hq': getEmptyTextureObject(1545, 1024, WALL_TYPE.LEAVES),
     'leaves-2-hq': getEmptyTextureObject(1545, 1024, WALL_TYPE.MIO),
-    'npc': getEmptyTextureObject(214, 239),
+    'transparent': getEmptyTextureObject(64, 64),
     'skybox': getEmptyTextureObject(640, 320),
+    'npc': getEmptyTextureObject(128, 128),
   },
   SOUNDS: {
 

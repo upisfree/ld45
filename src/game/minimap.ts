@@ -9,7 +9,7 @@ export default class Minimap {
   camera: Camera;
   scale: Vector2;
 
-  rayColor: Color = new Color(255, 255, 0);
+  rayColor: Color = new Color(0, 255, 0);
   minimapPosition: Vector2 = new Vector2(10, 10);
 
   constructor(
@@ -41,7 +41,7 @@ export default class Minimap {
             bitmap,
             new Vector2(0, 0),
             new Vector2(bitmap.width, bitmap.height),
-            this.getEnityPosition(position),
+            this.getEnityPosition(position, this.scale),
             this.scale,
             0
           );
@@ -59,7 +59,7 @@ export default class Minimap {
         sprite.bitmap,
         new Vector2(0, 0),
         new Vector2(sprite.bitmap.width, sprite.bitmap.height),
-        this.getEnityPosition(position),
+        this.getEnityPosition(position, this.scale),
         this.scale,
         0
       );
@@ -77,8 +77,14 @@ export default class Minimap {
     }    
   }
 
-  private getEnityPosition(position: Vector2): Vector2 {
-    return new Vector2(this.minimapPosition.x + position.x * this.scale.x,
-                       this.minimapPosition.y + position.y * this.scale.y);
+  private getEnityPosition(position: Vector2, size: Vector2 = null): Vector2 {
+    let p = new Vector2(this.minimapPosition.x + position.x * this.scale.x,
+                        this.minimapPosition.y + position.y * this.scale.y);
+
+    if (size) {
+      p = p.sub(new Vector2(size.width / 2, size.height / 2));
+    }
+
+    return p;
   }
 }

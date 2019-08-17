@@ -11,7 +11,7 @@ class Player {
   rotation: number = 0;
 
   moveSpeed: number = 0.05;
-  rotateSpeed: number = Math.PI / 256;
+  rotateSpeed: number = Math.PI / 128;
   noddlingStabilizationSpeed: number = 20;
   noddlingFrequency: number = 100;
   noddlingForce: number = 0;

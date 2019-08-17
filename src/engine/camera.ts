@@ -69,7 +69,7 @@ class Camera {
     // this.drawSkybox();
     this.drawWalls();
     this.drawSprites();
-    this.drawZBuffer();
+    // this.drawZBuffer();
   }
 
   public resize(): void {
