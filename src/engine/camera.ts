@@ -222,8 +222,7 @@ class Camera {
         new Vector2(textureX, 0),
         new Vector2(1, bitmap.height),
         new Vector2(this.rayWidth * i, y),
-        new Vector2(this.rayWidth, height),
-        0
+        new Vector2(this.rayWidth, height)
       );
 
       // if (fog) {
@@ -280,8 +279,7 @@ class Camera {
           new Vector2(textureX, 0),
           new Vector2(this.rayWidth, sprite.bitmap.height),
           new Vector2(j, y),
-          new Vector2(this.rayWidth, height),
-          0
+          new Vector2(this.rayWidth, height)
         );
       }
     }
@@ -316,8 +314,7 @@ class Camera {
       new Vector2(x, 0),
       new Vector2(skybox.width, skybox.height),
       new Vector2(0, 0),
-      new Vector2(this.ww, this.wh / 2),
-      0
+      new Vector2(this.ww, this.wh / 2)
     );
   }
 

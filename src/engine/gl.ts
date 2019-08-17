@@ -42,7 +42,7 @@ namespace gl {
     bitmapSize: Vector2,
     drawPosition: Vector2,
     drawSize: Vector2,
-    drawRotation: number
+    drawRotation: number = 0
   ): void {
     context.save();
 

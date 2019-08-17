@@ -42,8 +42,7 @@ export default class Minimap {
             new Vector2(0, 0),
             new Vector2(bitmap.width, bitmap.height),
             this.getEnityPosition(position, this.scale),
-            this.scale,
-            0
+            this.scale
           );
         }
       }
@@ -60,8 +59,7 @@ export default class Minimap {
         new Vector2(0, 0),
         new Vector2(sprite.bitmap.width, sprite.bitmap.height),
         this.getEnityPosition(position, this.scale),
-        this.scale,
-        0
+        this.scale
       );
     }
   }
