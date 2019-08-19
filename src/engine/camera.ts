@@ -7,6 +7,7 @@ import gl from './gl';
 import Player from '../game/player';
 import { default as Level, WALL_TEXTURE } from './level';
 import Bitmap from './bitmap';
+import Sprite from './sprite';
 import { WALL_SIDE } from './const';
 import { canvas } from './platform/canvas';
 import WALL_TYPE from '../game/wall-types';
@@ -19,6 +20,7 @@ export interface Ray {
   rotation: number;
   side: WALL_SIDE;
   type: WALL_TYPE;
+  index: number;
 }
 
 class Camera {
@@ -36,8 +38,8 @@ class Camera {
   raysCount: number = 128;
 
   rayWidth: number;
-  ww: number;
-  wh: number;
+  ww: number; // window width
+  wh: number; // window height
 
   nBitmap: Bitmap;
   eBitmap: Bitmap;
@@ -62,14 +64,14 @@ class Camera {
   }
 
   public render(): void {
-    this.rays = this.getRays();
+    this.castRays();
     this.zBuffer = new Float32Array(this.ww);
 
-    // this.drawGround();
-    // this.drawSkybox();
-    this.drawWalls();
-    this.drawSprites();
-    // this.drawZBuffer();
+    this.renderGround();
+    // this.renderSkybox();
+    this.renderWallsStripes();
+    this.renderSprites();
+    this.renderZBuffer();
   }
 
   public resize(): void {
@@ -80,8 +82,8 @@ class Camera {
     this.zBuffer = new Float32Array(this.ww);
   }
 
-  private getRays(): Ray[] {
-    let rays: Ray[] = [];
+  private castRays(): void {
+    this.rays = [];
 
     for (let i = 0; i < this.raysCount; i++) {
       let d: number = -1;
@@ -131,161 +133,175 @@ class Camera {
         d *= Math.cos(r - this.rotation);
       };
 
-      rays.push({
+      this.rays.push({
         a: a,
         b: b,
         distance: d,
         rotation: r,
         side: s,
-        type: t
+        type: t,
+        index: i
       });
     }
-
-    return rays;
   }
 
-  private drawWalls(): void {
+  // заполняем zbuffer — т.к. мы рендерим по одной полоске, его надо вручную продлять
+  private fillWallStripeZBuffer(ray: Ray): void {
+    let start = Math.ceil(this.rayWidth * ray.index);
+    let end = this.rayWidth * (ray.index + 1);
+
+    for (let j = start; j < end; j++) {
+      this.zBuffer[j] = ray.distance;
+    };
+  }
+
+  private renderWallStripe(ray: Ray): void {
+    this.fillWallStripeZBuffer(ray);
+
+    // если пустота, то не рисуем
+    if (ray.distance === -1) {
+      return;
+    };
+
+    let bitmap = WALL_TEXTURE[ray.type].bitmap;
+
+    let rotation = ray.rotation;
+    let height = this.wh / ray.distance;
+    let z = ray.distance / this.rayDistance;
+    let y = this.wh / 2 - height / 2 + this.heightOffset;
+
+    let fractional;
+    let fractionalX = ray.b.x % 1;
+    let fractionalY = ray.b.y % 1;
+
+    // понимаем какая стена и в зависимости от этого пользуемся данными от округления
+    // позиции падения взгляда, чтобы определить насколько нам нужно сдвинуться в текстуре
+    // чтобы получить позицию текстуры полоски
+    switch (ray.side) {
+      case WALL_SIDE.NORTH:
+        if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
+          bitmap = this.nBitmap;
+        };
+
+        // инвертируем текстуру
+        fractional = 1 - fractionalX;
+
+        break;
+
+      case WALL_SIDE.EAST:
+        if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
+          bitmap = this.eBitmap;
+        };
+
+        fractional = 1 - fractionalY;
+
+        break;
+      
+      case WALL_SIDE.SOUTH:
+        if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
+          bitmap = this.sBitmap;
+        };
+
+        fractional = fractionalX;
+
+        break;
+
+      case WALL_SIDE.WEST:
+        if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
+          bitmap = this.wBitmap;
+        };
+
+        fractional = fractionalY;
+
+        break;
+    };
+
+    // сдвигаем текстуру на половинку
+    fractional = (fractional >= 0.5) ? fractional - 0.5 : fractional + 0.5;
+
+    // округляем, чтобы закрыть белые дырки
+    let textureX = Math.floor(bitmap.width * fractional);
+
+    gl.drawImage(
+      bitmap,
+      new Vector2(textureX, 0),
+      new Vector2(1, bitmap.height),
+      new Vector2(this.rayWidth * ray.index, y),
+      new Vector2(this.rayWidth, height)
+    );
+
+    // if (fog) {
+    // gl.drawRect(
+    //   new Vector2(this.rayWidth * i, this.wh / 2 - height / 2),
+    //   new Vector2(this.rayWidth + 10, height),
+    //   0,
+    //   new Color(1, 1, 1, z + 0.35)
+    // );
+  }
+
+  private renderWallsStripes(): void {
     for (let i = 0; i < this.rays.length; i++) {
-      let ray = this.rays[i];
+      this.renderWallStripe(this.rays[i]);
+    }
+  }
 
-      // заполняем zbuffer — т.к. мы рендерим по одной полоске, его надо вручную продлять
-      for (let j = Math.ceil(this.rayWidth * i); j < this.rayWidth * (i + 1); j++) {
-        this.zBuffer[j] = ray.distance;
-      };
+  private renderSprite(sprite: Sprite): void {
+    let rotation = Math.atan2(sprite.position.y - this.position.y, sprite.position.x - this.position.x);
+    let distance = Vector2.distance(this.position, sprite.position);
 
-      // если пустота, то не рисуем
-      if (ray.distance === -1) {
+    if (distance > this.rayDistance) {
+      return;
+    };
+
+    // пока исключительно квадратные текстуры
+    let width = this.wh / distance;
+    let height = this.wh / distance;
+
+    let startX = (rotation - this.rotation) * (this.ww) / (this.fov) + (this.ww) / 2 - width / 2;
+    let endX = startX + width;
+
+    let y = this.wh / 2 - height / 2 + this.heightOffset;
+
+    for (let j = startX; j < endX; j += this.rayWidth) {
+      let wallStripe = this.zBuffer[Math.ceil(j)];
+
+      // -1 не учитывается
+      if (wallStripe !== undefined &&
+          wallStripe !== null &&
+          wallStripe < distance &&
+          wallStripe !== -1
+      ) {
         continue;
       };
 
-      let bitmap = WALL_TEXTURE[ray.type].bitmap;
-
-      let rotation = ray.rotation;
-      let z = ray.distance / this.rayDistance;
-      let height = this.wh / ray.distance;
-      let y = this.wh / 2 - height / 2 + this.heightOffset;
-
-      let fractional;
-      let fractionalX = ray.b.x % 1;
-      let fractionalY = ray.b.y % 1;
-
-      // понимаем какая стена и в зависимости от этого пользуемся данными от округления
-      // позиции падения взгляда, чтобы определить насколько нам нужно сдвинуться в текстуре
-      // чтобы получить позицию текстуры полоски
-      switch (ray.side) {
-        case WALL_SIDE.NORTH:
-          if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
-            bitmap = this.nBitmap;
-          };
-
-          // инвертируем текстуру
-          fractional = 1 - fractionalX;
-
-          break;
-
-        case WALL_SIDE.EAST:
-          if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
-            bitmap = this.eBitmap;
-          };
-
-          fractional = 1 - fractionalY;
-
-          break;
-        
-        case WALL_SIDE.SOUTH:
-          if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
-            bitmap = this.sBitmap;
-          };
-
-          fractional = fractionalX;
-
-          break;
-
-        case WALL_SIDE.WEST:
-          if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
-            bitmap = this.wBitmap;
-          };
-
-          fractional = fractionalY;
-
-          break;
-      };
-
-      // сдвигаем текстуру на половинку
-      fractional = (fractional >= 0.5) ? fractional - 0.5 : fractional + 0.5;
-
-      // округляем, чтобы закрыть белые дырки
-      let textureX = Math.floor(bitmap.width * fractional);
+      let textureX = Math.floor((j - startX) * sprite.bitmap.width / width);
 
       gl.drawImage(
-        bitmap,
+        sprite.bitmap,
         new Vector2(textureX, 0),
-        new Vector2(1, bitmap.height),
-        new Vector2(this.rayWidth * i, y),
+        new Vector2(this.rayWidth, sprite.bitmap.height),
+        new Vector2(j, y),
         new Vector2(this.rayWidth, height)
       );
-
-      // if (fog) {
-      // gl.drawRect(
-      //   new Vector2(this.rayWidth * i, this.wh / 2 - height / 2),
-      //   new Vector2(this.rayWidth + 10, height),
-      //   0,
-      //   new Color(1, 1, 1, z + 0.35)
-      // );
     }
   }
 
-  private drawSprites(): void {
-    // сортируем спрайты по дальности от игрока, чтобы правильно отрисовать
+  private renderSprites(): void {
+    this.sortSprites();
+
+    for (let i = 0; i < this.level.sprites.length; i++) {
+      this.renderSprite(this.level.sprites[i]);
+    }
+  }
+
+  // сортируем спрайты по дальности от игрока, чтобы правильно отрисовать
+  private sortSprites(): void {
     this.level.sprites.sort((a, b) => {
       return Vector2.distance(this.position, b.position) - Vector2.distance(this.position, a.position);
     });
-
-    for (let i = 0; i < this.level.sprites.length; i++) {
-      let sprite = this.level.sprites[i];
-      
-      let rotation = Math.atan2(sprite.position.y - this.position.y, sprite.position.x - this.position.x);
-      let distance = Vector2.distance(this.position, sprite.position);
-
-      if (distance > this.rayDistance) {
-        continue;
-      };
-
-      // пока исключительно квадратные текстуры
-      let width = this.wh / distance;
-      let height = this.wh / distance;
-
-      let startX = (rotation - this.rotation) * (this.ww) / (this.fov) + (this.ww) / 2 - width / 2;
-      let endX = startX + width;
-
-      let y = this.wh / 2 - height / 2 + this.heightOffset;
-
-      for (let j = startX; j < endX; j += this.rayWidth) {
-        let wallStripe = this.zBuffer[Math.ceil(j)];
-
-        // -1 не учитывается
-        if (wallStripe !== undefined &&
-            wallStripe !== null &&
-            wallStripe < distance &&
-            wallStripe !== -1
-        ) {
-          continue;
-        };
-
-        let textureX = Math.floor((j - startX) * sprite.bitmap.width / width);
-
-        gl.drawImage(
-          sprite.bitmap,
-          new Vector2(textureX, 0),
-          new Vector2(this.rayWidth, sprite.bitmap.height),
-          new Vector2(j, y),
-          new Vector2(this.rayWidth, height)
-        );
-      }
-    }
   }
 
-  private drawGround(): void {
+  private renderGround(): void {
     gl.drawGradient(
       new Vector2(0, 0),
       new Vector2(this.ww, this.wh),
@@ -295,7 +311,7 @@ class Camera {
     );
   }
 
-  private drawSkybox(): void {
+  private renderSkybox(): void {
     let scaleFactor = 4;
     let skybox = this.level.skybox;
 
@@ -318,10 +334,14 @@ class Camera {
     );
   }
 
-  private drawZBuffer(): void {
+  private renderZBuffer(): void {
     let h = 15;
 
     for (let i = 0; i < this.zBuffer.length; i++) {
+      if (this.zBuffer[i] === -1) {
+        continue;
+      }
+
       let v = this.zBuffer[i] / this.rayDistance;
 
       gl.drawLine(
