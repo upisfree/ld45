@@ -67,11 +67,11 @@ class Camera {
     this.castRays();
     this.zBuffer = new Float32Array(this.ww);
 
-    this.renderGround();
+    // this.renderGround();
     // this.renderSkybox();
     this.renderWallsStripes();
     this.renderSprites();
-    this.renderZBuffer();
+    // this.renderZBuffer();
   }
 
   public resize(): void {
@@ -246,7 +246,7 @@ class Camera {
   }
 
   private renderSprite(sprite: Sprite): void {
-    let rotation = Math.atan2(sprite.position.y - this.position.y, sprite.position.x - this.position.x);
+    let rotation = Angle.betweenTwoPoints(this.position, sprite.position);
     let distance = Vector2.distance(this.position, sprite.position);
 
     if (distance > this.rayDistance) {
@@ -257,7 +257,22 @@ class Camera {
     let width = this.wh / distance;
     let height = this.wh / distance;
 
-    let startX = (rotation - this.rotation) * (this.ww) / (this.fov) + (this.ww) / 2 - width / 2;
+    let r = rotation - this.rotation;
+
+    // обычно, разница между поворотом спрайта и камеры лежит между -1 и 1.
+    // но если смотреть на спрайт с западной стороны, мы попадаем на тот момент,
+    // когда поворот камеры превышает PI_2 и становится 0 (т.к. мы его нормализуем между 0 и PI_2)
+    // и разница между поворотом спрайта и камеры зашкаливает, и вычисляются неправильные экранные координаты.
+    // исправляем это, нивелируя нормализацию поворота камеры.
+    // конечно, можно с этим не париться, используя матрицу преобразования (и там фишай вроде бы чинится), но это на будущее
+    // https://lodev.org/cgtutor/raycasting3.html
+    if (r > 1) {
+      r -= Angle.PI_2;
+    } else if (r < -1) {
+      r += Angle.PI_2;
+    }
+
+    let startX = (r) * (this.ww) / (this.fov) + (this.ww) / 2 - width / 2;
     let endX = startX + width;
 
     let y = this.wh / 2 - height / 2 + this.heightOffset;
@@ -279,7 +294,7 @@ class Camera {
       gl.drawImage(
         sprite.bitmap,
         new Vector2(textureX, 0),
-        new Vector2(this.rayWidth, sprite.bitmap.height),
+        new Vector2(1, sprite.bitmap.height),
         new Vector2(j, y),
         new Vector2(this.rayWidth, height)
       );

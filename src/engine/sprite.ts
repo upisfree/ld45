@@ -15,6 +15,10 @@ class Sprite {
 
     this.level.sprites.push(this);
   }
+
+  // public render(): void {
+
+  // }
 }
 
 export default Sprite;

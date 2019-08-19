@@ -10,7 +10,7 @@ class Bitmap {
     this.height = height;
   }
 
-  // render() {
+  // public render(): void {
   //
   // }
 }

@@ -50,8 +50,8 @@ class Player {
     switch (direction) {
       case DIRECTION.UP:
         v = new Vector2(
-          this.position.x + this.moveSpeed * Math.cos(this.rotation), // +
-          this.position.y + this.moveSpeed * Math.sin(this.rotation)  // -
+          this.position.x + this.moveSpeed * Math.cos(this.rotation),
+          this.position.y + this.moveSpeed * Math.sin(this.rotation)
         );
 
         if (!isCollision) {
@@ -69,8 +69,8 @@ class Player {
 
       case DIRECTION.DOWN:
         v = new Vector2(
-          this.position.x - this.moveSpeed * Math.cos(this.rotation), // -
-          this.position.y - this.moveSpeed * Math.sin(this.rotation)  // +
+          this.position.x - this.moveSpeed * Math.cos(this.rotation),
+          this.position.y - this.moveSpeed * Math.sin(this.rotation)
         );
 
         if (!isCollision) {
