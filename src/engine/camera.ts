@@ -10,8 +10,7 @@ import Bitmap from './bitmap';
 import Sprite from './sprite';
 import { CARDINAL } from './const';
 import { canvas } from './platform/canvas';
-import WALL_TYPE from '../game/wall-types';
-
+import { WALL_TYPE } from '../game/walls-data';
 
 export interface Ray {
   a: Vector2;
@@ -321,7 +320,7 @@ class Camera {
       new Vector2(0, 0),
       new Vector2(this.ww, this.wh),
       0,
-      new Color(1, 1, 1),
+      new Color(255, 255, 255),
       new Color(0, 0, 0)
     );
   }
@@ -358,11 +357,12 @@ class Camera {
       }
 
       let v = this.zBuffer[i] / this.rayDistance;
+      let c = v * 255;
 
       gl.drawLine(
-        new Vector2(i, this.wh / 2 - h / v),
-        new Vector2(i, this.wh / 2 + h / v),
-        new Color(v, v, v),
+        new Vector2(i, this.wh / 2 + this.heightOffset - h / v),
+        new Vector2(i, this.wh / 2 + this.heightOffset + h / v),
+        new Color(c, c, c),
       );
     }
   }

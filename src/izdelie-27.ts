@@ -19,35 +19,13 @@ load(init);
 function init() {
   ASSETS.MAP_BITMAP = ASSETS.TEXTURES['map'].bitmap;
 
-  let levelSize = 16;
-  let levelData = new Uint8Array([
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1,
-    1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 1, 1, 2, 0, 2, 2, 2, 2, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-    1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1,
-  ]);
+  let level = new Level(0, null, [], ASSETS.TEXTURES['skybox'].bitmap, false);
+  level.parseFromBitmap(ASSETS.MAP_BITMAP);
 
-  // let levelSize = 16;
-  // let levelData = new Uint8Array(levelSize);
-
-  let level = new Level(levelSize, levelData, [], ASSETS.TEXTURES['skybox'].bitmap, false);
   let camera = new Camera(level);
-  let player = new Player(camera, level, new Vector2(levelSize / 2, levelSize / 2), Math.PI / -2);
+  let player = new Player(camera, level, new Vector2(level.size / 2, level.size / 2), Math.PI / -2);
   let minimap = new Minimap(level, camera, new Vector2(20, 20));
 
-  level.parseFromBitmap(ASSETS.MAP_BITMAP);
 
   console.log(ASSETS, level, player, camera, minimap);
 
@@ -60,7 +38,7 @@ function init() {
   for (let i = 0; i < 10; i++) {
     new NPC(
       ASSETS.TEXTURES['npc'].bitmap,
-      new Vector2(Math.ceil(levelSize * Math.random()), Math.ceil(levelSize * Math.random())),
+      new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
       level
     );
   }

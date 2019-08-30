@@ -1,9 +1,10 @@
 import ASSETS from '../assets';
 import Vector2 from './math/vector2';
+import Color from './math/color';
 import Sprite from './sprite';
 import Bitmap from './bitmap';
 import NPC from '../game/npc';
-import WALL_TYPE from '../game/wall-types';
+import { WALL_TYPE, WALLS_DATA } from '../game/walls-data';
 
 const WALL_TEXTURE = { };
 
@@ -75,9 +76,29 @@ class Level {
   }
 
   public parseFromBitmap(bitmap: Bitmap): void {
-    let imageData = bitmap.getImageData();
+    let data = [];
 
-    console.log(imageData);
+    for (let y = 0; y < bitmap.height; y++) {
+      for (let x = 0; x < bitmap.width; x++) {
+        let offset = (y * (bitmap.width * 4)) + (x * 4);
+        
+        let r = bitmap.imageData[offset];
+        let g = bitmap.imageData[offset + 1];
+        let b = bitmap.imageData[offset + 2];
+        let a = bitmap.imageData[offset + 3];
+        
+        let color = new Color(r, g, b, a);
+
+        WALLS_DATA.forEach(wallData => {
+          if (wallData.color.equals(color)) {
+            data.push(wallData.code);
+          }
+        });
+      }
+    }
+
+    this.size = bitmap.width;
+    this.walls = new Uint8Array(data);
   }
 }
 
