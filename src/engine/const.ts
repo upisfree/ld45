@@ -11,20 +11,20 @@ const enum KEY_CODE {
 
 const enum DIRECTION {
   UP,
-  LEFT,
   DOWN,
+  LEFT,
   RIGHT
 };
 
-const enum WALL_SIDE {
+const enum CARDINAL {
   NORTH,
-  EAST,
   SOUTH,
-  WEST
+  WEST,
+  EAST
 };
 
 export {
   KEY_CODE,
   DIRECTION,
-  WALL_SIDE
+  CARDINAL
 };

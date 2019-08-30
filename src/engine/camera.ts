@@ -8,7 +8,7 @@ import Player from '../game/player';
 import { default as Level, WALL_TEXTURE } from './level';
 import Bitmap from './bitmap';
 import Sprite from './sprite';
-import { WALL_SIDE } from './const';
+import { CARDINAL } from './const';
 import { canvas } from './platform/canvas';
 import WALL_TYPE from '../game/wall-types';
 
@@ -18,7 +18,7 @@ export interface Ray {
   b: Vector2;
   distance: number;
   rotation: number;
-  side: WALL_SIDE;
+  side: CARDINAL;
   type: WALL_TYPE;
   index: number;
 }
@@ -87,7 +87,7 @@ class Camera {
 
     for (let i = 0; i < this.raysCount; i++) {
       let d: number = -1;
-      let s: WALL_SIDE;
+      let s: CARDINAL;
       let t: WALL_TYPE = WALL_TYPE.VOID;
 
       let r: number = Angle.normalize(this.rotation - this.fov / 2 + this.fov * i / this.raysCount);
@@ -109,9 +109,9 @@ class Camera {
         t = this.level.getWallType(b);
 
         // запад или восток
-        if (Level.isWallTypeNotVoidOrAir(t)) {
+        if (!Level.isWallTypeVoidOrAir(t)) {
           d = j;
-          s = (a.x < b.x) ? WALL_SIDE.WEST : WALL_SIDE.EAST; // <= || >= ?
+          s = (a.x < b.x) ? CARDINAL.WEST : CARDINAL.EAST; // <= || >= ?
 
           break;
         };
@@ -121,9 +121,9 @@ class Camera {
         t = this.level.getWallType(b);
 
         // север или юг
-        if (Level.isWallTypeNotVoidOrAir(t)) {
+        if (!Level.isWallTypeVoidOrAir(t)) {
           d = j;
-          s = (a.y < b.y) ? WALL_SIDE.NORTH : WALL_SIDE.SOUTH; // <= || >= ?
+          s = (a.y < b.y) ? CARDINAL.NORTH : CARDINAL.SOUTH; // <= || >= ?
 
           break;
         };
@@ -178,7 +178,7 @@ class Camera {
     // позиции падения взгляда, чтобы определить насколько нам нужно сдвинуться в текстуре
     // чтобы получить позицию текстуры полоски
     switch (ray.side) {
-      case WALL_SIDE.NORTH:
+      case CARDINAL.NORTH:
         if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
           bitmap = this.nBitmap;
         };
@@ -188,7 +188,7 @@ class Camera {
 
         break;
 
-      case WALL_SIDE.EAST:
+      case CARDINAL.EAST:
         if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
           bitmap = this.eBitmap;
         };
@@ -197,7 +197,7 @@ class Camera {
 
         break;
       
-      case WALL_SIDE.SOUTH:
+      case CARDINAL.SOUTH:
         if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
           bitmap = this.sBitmap;
         };
@@ -206,7 +206,7 @@ class Camera {
 
         break;
 
-      case WALL_SIDE.WEST:
+      case CARDINAL.WEST:
         if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
           bitmap = this.wBitmap;
         };

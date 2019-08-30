@@ -34,7 +34,7 @@ export default class Minimap {
         let position = new Vector2(x, y);
         let type = this.level.getWallType(position);
 
-        if (Level.isWallTypeNotVoidOrAir(type)) {
+        if (!Level.isWallTypeVoidOrAir(type)) {
           let bitmap = WALL_TEXTURE[type].bitmap;
 
           gl.drawImage(

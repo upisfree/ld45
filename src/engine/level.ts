@@ -20,8 +20,8 @@ class Level {
   npcs: NPC[];
   skybox: Bitmap;
 
-  public static isWallTypeNotVoidOrAir(type: WALL_TYPE): boolean {
-    return type !== WALL_TYPE.VOID && type !== WALL_TYPE.AIR;
+  public static isWallTypeVoidOrAir(type: WALL_TYPE): boolean {
+    return type === WALL_TYPE.VOID || type === WALL_TYPE.AIR;
   }
 
   constructor(
@@ -58,6 +58,14 @@ class Level {
     } else {
       return t;
     }
+  }
+
+  public isCollision(p: Vector2): boolean {
+    return !Level.isWallTypeVoidOrAir(this.getWallType(p));
+  }
+
+  public isNotCollision(p: Vector2): boolean {
+    return Level.isWallTypeVoidOrAir(this.getWallType(p));
   }
 
   public randomize = function() {

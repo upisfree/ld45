@@ -24,7 +24,7 @@ class NPC extends Sprite {
 
     let t = this.level.getWallType(v);
 
-    if (!Level.isWallTypeNotVoidOrAir(t)) {
+    if (Level.isWallTypeVoidOrAir(t)) {
       this.position = v;
     } else {
       this.rotation += Math.random() * Math.PI * 2;

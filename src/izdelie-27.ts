@@ -42,7 +42,7 @@ function init() {
 
   let level = new Level(levelSize, levelData, [], ASSETS.TEXTURES['skybox'].bitmap, false);
   let camera = new Camera(level);
-  let player = new Player(camera, new Vector2(levelSize / 2, levelSize / 2), Math.PI / -2);
+  let player = new Player(camera, level, new Vector2(levelSize / 2, levelSize / 2), Math.PI / -2);
   let minimap = new Minimap(level, camera, new Vector2(20, 20));
 
   console.log(level, player, camera, minimap);
