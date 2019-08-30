@@ -1,7 +1,8 @@
 import Vector2 from '../engine/math/vector2';
 import Color from '../engine/math/color';
 import gl from '../engine/gl';
-import { default as Level, WALL_TYPE, WALL_TEXTURE } from '../engine/level';
+import { default as Level, WALL_TEXTURE } from '../engine/level';
+import WALL_TYPE from './wall-types';
 import Camera from '../engine/camera';
 
 export default class Minimap {

@@ -68,15 +68,20 @@ class Level {
     return Level.isWallTypeVoidOrAir(this.getWallType(p));
   }
 
-  public randomize = function() {
+  public randomize(): void {
     for (let i = 0; i < this.size * this.size; i++) {
       this.walls[i] = Math.random() < 0.25 ? 1 : 0;
     }
+  }
+
+  public parseFromBitmap(bitmap: Bitmap): void {
+    let imageData = bitmap.getImageData();
+
+    console.log(imageData);
   }
 }
 
 export {
   Level as default,
-  WALL_TYPE,
   WALL_TEXTURE
 };

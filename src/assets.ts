@@ -1,34 +1,32 @@
 import Bitmap from './engine/bitmap';
-import { WALL_TYPE } from './engine/level';
+import WALL_TYPE from './game/wall-types';
 
 interface TextureAsset {
   bitmap: Bitmap;
-  width: number;
-  height: number;
   wallType?: WALL_TYPE;
 }
 
-function getEmptyTextureObject(width: number, height: number, wallType?: WALL_TYPE): TextureAsset {
+function getEmptyTextureObject(wallType?: WALL_TYPE): TextureAsset {
   return {
     bitmap: null,
-    width: width,
-    height: height,
     wallType: wallType
   };
 }
 
 const ASSETS = {
   FOLDER_URL: './assets/',
+  MAP_BITMAP: undefined,
   TEXTURES: {
-    'n': getEmptyTextureObject(64, 64),
-    'e': getEmptyTextureObject(64, 64),
-    's': getEmptyTextureObject(64, 64),
-    'w': getEmptyTextureObject(64, 64),
-    'leaves-1-hq': getEmptyTextureObject(1545, 1024, WALL_TYPE.LEAVES),
-    'leaves-2-hq': getEmptyTextureObject(1545, 1024, WALL_TYPE.MIO),
-    'transparent': getEmptyTextureObject(64, 64),
-    'skybox': getEmptyTextureObject(640, 320),
-    'npc': getEmptyTextureObject(128, 128),
+    'map': getEmptyTextureObject(),
+    'n': getEmptyTextureObject(),
+    'e': getEmptyTextureObject(),
+    's': getEmptyTextureObject(),
+    'w': getEmptyTextureObject(),
+    'leaves-1-hq': getEmptyTextureObject(WALL_TYPE.LEAVES),
+    'leaves-2-hq': getEmptyTextureObject(WALL_TYPE.MIO),
+    'transparent': getEmptyTextureObject(),
+    'skybox': getEmptyTextureObject(),
+    'npc': getEmptyTextureObject(),
   },
   SOUNDS: {
 
