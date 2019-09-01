@@ -66,8 +66,8 @@ class Camera {
     this.castRays();
     this.zBuffer = new Float32Array(this.ww);
 
-    // this.renderGround();
-    // this.renderSkybox();
+    this.renderGround();
+    this.renderSkybox();
     this.renderWallsStripes();
     this.renderSprites();
     // this.renderZBuffer();
@@ -326,26 +326,30 @@ class Camera {
   }
 
   private renderSkybox(): void {
-    let scaleFactor = 4;
     let skybox = this.level.skybox;
-
-    // let x = this.ww * this.rotation;
-    let x = Math.abs(this.rotation / Math.PI * 2) * -skybox.width;
     let w = skybox.width * (this.wh / skybox.height) * 2;
-
-    if (x > w - this.ww) {
-      x += w;
-    }
-
-    // console.log(x, skybox.width);
+    let h = this.wh / 2 + this.heightOffset;
+    let x = (this.rotation / Math.PI / 2) * -w;
+    let y = 0;
 
     gl.drawImage(
       skybox,
-      new Vector2(x, 0),
-      new Vector2(skybox.width, skybox.height),
       new Vector2(0, 0),
-      new Vector2(this.ww, this.wh / 2)
+      new Vector2(skybox.width, skybox.height),
+      new Vector2(x, y),
+      new Vector2(w, h)
     );
+
+    // если нужно повторить скайбокс
+    if (x < w - this.ww) {
+      gl.drawImage(
+        skybox,
+        new Vector2(0, 0),
+        new Vector2(skybox.width, skybox.height),
+        new Vector2(x + w, y),
+        new Vector2(w, h)
+      );
+    }
   }
 
   private renderZBuffer(): void {
