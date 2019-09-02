@@ -31,17 +31,17 @@ function init() {
 
   new NPC(
     ASSETS.TEXTURES['npc'].bitmap,
-    new Vector2(2, 2),
+    new Vector2(level.size / 2, level.size / 2 + 2),
     level
   );
 
-  for (let i = 0; i < 10; i++) {
-    new NPC(
-      ASSETS.TEXTURES['npc'].bitmap,
-      new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
-      level
-    );
-  }
+  // for (let i = 0; i < 10; i++) {
+  //   new NPC(
+  //     ASSETS.TEXTURES['npc'].bitmap,
+  //     new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+  //     level
+  //   );
+  // }
 
   initKeyboard();
   addKeyboardListener(player.onKeyboardTick.bind(player));

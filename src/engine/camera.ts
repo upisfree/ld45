@@ -28,6 +28,7 @@ class Camera {
   rotation: number = 0;
   level: Level;
   fov: number;
+  minSpriteDistance: number = 0.01;
 
   zBuffer: Float32Array;
 
@@ -250,7 +251,12 @@ class Camera {
 
     if (distance > this.rayDistance) {
       return;
-    };
+    }
+
+    // чтобы на ноль тут не делить
+    if (distance < this.minSpriteDistance) {
+      distance = this.minSpriteDistance;
+    }
 
     // пока исключительно квадратные текстуры
     let width = this.wh / distance;
