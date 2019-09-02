@@ -3,8 +3,8 @@ import Color from '../engine/math/color';
 const enum WALL_TYPE {
   VOID = -1,
   AIR = 0,
-  LEAVES = 1,
-  MIO = 2,
+  CONCRETE = 1,
+  WOOD = 2,
 };
 
 const WALLS_DATA = [
@@ -20,12 +20,12 @@ const WALLS_DATA = [
   },
   {
     name: 'leaves',
-    code: WALL_TYPE.LEAVES,
+    code: WALL_TYPE.CONCRETE,
     color: new Color(0, 0, 0, 255)
   },
   {
     name: 'mio',
-    code: WALL_TYPE.MIO,
+    code: WALL_TYPE.WOOD,
     color: new Color(255, 0, 0, 255)
   },
 ];

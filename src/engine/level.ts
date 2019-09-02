@@ -43,6 +43,16 @@ class Level {
     }
   }
 
+  public update(): void {
+    // обновляем физику спрайтов
+    this.sprites.forEach(sprite => {
+      sprite.collisionWith = null;
+      sprite.detectCollisions();
+    });
+
+    this.npcs.forEach(npc => npc.update());
+  }
+
   // возвращает стену
   public getWallType(p: Vector2): WALL_TYPE {
     let x = Math.round(p.x);

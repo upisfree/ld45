@@ -326,7 +326,8 @@ class Camera {
       new Vector2(0, 0),
       new Vector2(this.ww, this.wh),
       0,
-      new Color(255, 255, 255),
+      new Color(0, 0, 0),
+      // new Color(255, 255, 255),
       new Color(0, 0, 0)
     );
   }

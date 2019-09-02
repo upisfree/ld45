@@ -1,3 +1,4 @@
+import Angle from '../engine/math/angle';
 import Vector2 from '../engine/math/vector2';
 import Bitmap from '../engine/bitmap';
 import Sprite from '../engine/sprite';
@@ -24,11 +25,12 @@ class NPC extends Sprite {
 
     let t = this.level.getWallType(v);
 
-    if (Level.isWallTypeVoidOrAir(t)) {
-      this.position = v;
-    } else {
+    if (this.collisionWith || !Level.isWallTypeVoidOrAir(t)) {
       this.rotation += Math.random() * Math.PI * 2;
+      this.rotation = Angle.normalize(this.rotation);
     }
+
+    this.position = v;
   }
 }
 

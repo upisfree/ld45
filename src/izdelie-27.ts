@@ -29,19 +29,25 @@ function init() {
 
   console.log(ASSETS, level, player, camera, minimap);
 
-  new NPC(
-    ASSETS.TEXTURES['npc'].bitmap,
-    new Vector2(level.size / 2, level.size / 2 + 2),
-    level
-  );
+  // new NPC(
+  //   ASSETS.TEXTURES['npc'].bitmap,
+  //   new Vector2(level.size / 2, level.size / 2 - 1),
+  //   level
+  // );
 
-  // for (let i = 0; i < 10; i++) {
-  //   new NPC(
-  //     ASSETS.TEXTURES['npc'].bitmap,
-  //     new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
-  //     level
-  //   );
-  // }
+  // new NPC(
+  //   ASSETS.TEXTURES['npc'].bitmap,
+  //   new Vector2(level.size / 2 + 0.5, level.size / 2 - 1),
+  //   level
+  // );
+
+  for (let i = 0; i < 10; i++) {
+    new NPC(
+      ASSETS.TEXTURES['npc'].bitmap,
+      new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+      level
+    );
+  }
 
   initKeyboard();
   addKeyboardListener(player.onKeyboardTick.bind(player));
@@ -54,8 +60,7 @@ function init() {
     minimap.render();
 
     player.update();
-
-    // level.npcs.forEach(npc => npc.update());
+    level.update();
 
     // camera.fov += Math.cos(performance.now() / 400) / 50;
   });
