@@ -14,8 +14,8 @@ namespace gl {
   export function drawRect(
     position: Vector2,
     size: Vector2,
-    rotation: number,
-    color: Color | CanvasGradient | string
+    color: Color | CanvasGradient | string,
+    rotation: number = 0
   ): void {
     context.save();
 
@@ -77,7 +77,7 @@ namespace gl {
       gradient.addColorStop(i, colors[i].getRGBAString());
     }
 
-    drawRect(position, size, rotation, gradient);
+    drawRect(position, size, gradient, rotation);
   }
 
   export function drawLine(

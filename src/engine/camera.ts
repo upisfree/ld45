@@ -230,13 +230,24 @@ class Camera {
       new Vector2(this.rayWidth, height)
     );
 
-    // if (fog) {
-    // gl.drawRect(
-    //   new Vector2(this.rayWidth * i, this.wh / 2 - height / 2),
-    //   new Vector2(this.rayWidth + 10, height),
-    //   0,
-    //   new Color(1, 1, 1, z + 0.35)
-    // );
+    if (CONFIG.LIGHTING_FAKE_CONTRAST) {
+      let color;
+      let start = Math.floor(this.rayWidth * ray.index);
+      let end = this.rayWidth * (ray.index + 1);
+      let width = Math.floor(end - start);
+
+      if (ray.side === CARDINAL.NORTH || ray.side === CARDINAL.SOUTH) {
+        color = new Color(255, 255, 255, 128);
+      } else {
+        color = new Color(0, 0, 0, 128);
+      }
+
+      gl.drawRect(
+        new Vector2(start, y),
+        new Vector2(width, height),
+        color
+      );
+    }
   }
 
   private renderWallsStripes(): void {
@@ -326,8 +337,7 @@ class Camera {
       new Vector2(0, 0),
       new Vector2(this.ww, this.wh),
       0,
-      new Color(0, 0, 0),
-      // new Color(255, 255, 255),
+      new Color(255, 255, 255),
       new Color(0, 0, 0)
     );
   }
