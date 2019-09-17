@@ -230,11 +230,23 @@ class Camera {
       new Vector2(this.rayWidth, height)
     );
 
+    let start = Math.floor(this.rayWidth * ray.index);
+    let end = this.rayWidth * (ray.index + 1);
+    let width = Math.floor(end - start);
+
     if (CONFIG.LIGHTING_FAKE_CONTRAST && (ray.side === CARDINAL.WEST || ray.side === CARDINAL.EAST)) {
       let color = new Color(0, 0, 0, 128);
-      let start = Math.floor(this.rayWidth * ray.index);
-      let end = this.rayWidth * (ray.index + 1);
-      let width = Math.floor(end - start);
+
+      gl.drawRect(
+        new Vector2(start, y),
+        new Vector2(width, height),
+        color
+      );
+    }
+
+    if (CONFIG.FOG) {
+      let color = CONFIG.FOG_COLOR;
+      color.a = 255 * z * CONFIG.FOG_FACTOR;
 
       gl.drawRect(
         new Vector2(start, y),
@@ -308,6 +320,19 @@ class Camera {
         new Vector2(j, y),
         new Vector2(this.rayWidth, height)
       );
+
+      // if (CONFIG.FOG) {
+      //   let z = distance / this.rayDistance;
+
+      //   let color = CONFIG.FOG_COLOR;
+      //   color.a = 255 * z * CONFIG.FOG_FACTOR;
+
+      //   gl.drawRect(
+      //     new Vector2(j, y),
+      //     new Vector2(this.rayWidth, height),
+      //     color
+      //   );
+      // }
     }
   }
 
