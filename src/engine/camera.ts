@@ -230,17 +230,11 @@ class Camera {
       new Vector2(this.rayWidth, height)
     );
 
-    if (CONFIG.LIGHTING_FAKE_CONTRAST) {
-      let color;
+    if (CONFIG.LIGHTING_FAKE_CONTRAST && (ray.side === CARDINAL.WEST || ray.side === CARDINAL.EAST)) {
+      let color = new Color(0, 0, 0, 128);
       let start = Math.floor(this.rayWidth * ray.index);
       let end = this.rayWidth * (ray.index + 1);
       let width = Math.floor(end - start);
-
-      if (ray.side === CARDINAL.NORTH || ray.side === CARDINAL.SOUTH) {
-        color = new Color(255, 255, 255, 128);
-      } else {
-        color = new Color(0, 0, 0, 128);
-      }
 
       gl.drawRect(
         new Vector2(start, y),
