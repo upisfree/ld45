@@ -10,9 +10,9 @@ import Camera from './engine/camera';
 import Level from './engine/level';
 import Player from './game/player';
 import Minimap from './game/minimap';
-import Bitmap from './engine/bitmap';
+import Bitmap from './engine/render/bitmap';
 import NPC from './game/npc';
-import gl from './engine/gl';
+import gl from './engine/render/gl';
 
 load(init);
 

@@ -1,5 +1,5 @@
 import { canvas } from './canvas';
-import Camera from '../camera';
+import Camera from '../render/camera';
 
 function onresize(canvas: HTMLCanvasElement, camera: Camera) {
   canvas.width = window.innerWidth;

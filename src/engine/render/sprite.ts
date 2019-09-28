@@ -1,7 +1,7 @@
-import Vector2 from './math/vector2';
+import Vector2 from '../math/vector2';
 import Bitmap from './bitmap';
-import Level from './level';
-import Player from '../game/player';
+import Level from '../level';
+import Player from '../../game/player';
 
 // спрайт — это плоская картинка, которая рисуется всегда лицом к игроку
 class Sprite {

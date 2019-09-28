@@ -1,4 +1,4 @@
-import Bitmap from './engine/bitmap';
+import Bitmap from './engine/render/bitmap';
 import { WALL_TYPE } from './game/walls-data';
 
 interface TextureAsset {

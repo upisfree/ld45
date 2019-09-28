@@ -1,7 +1,7 @@
 import { DIRECTION, KEY_CODE } from '../engine/const';
 import Vector2 from '../engine/math/vector2';
 import Angle from '../engine/math/angle';
-import Camera from '../engine/camera';
+import Camera from '../engine/render/camera';
 import Level from '../engine/level';
 import keyboard from '../engine/platform/keyboard';
 import mouse from '../engine/platform/mouse';

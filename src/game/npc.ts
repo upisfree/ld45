@@ -1,7 +1,7 @@
 import Angle from '../engine/math/angle';
 import Vector2 from '../engine/math/vector2';
-import Bitmap from '../engine/bitmap';
-import Sprite from '../engine/sprite';
+import Bitmap from '../engine/render/bitmap';
+import Sprite from '../engine/render/sprite';
 import Level from '../engine/level';
 
 class NPC extends Sprite {

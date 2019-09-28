@@ -1,16 +1,16 @@
-import CONFIG from '../config';
-import ASSETS from '../assets';
-import Vector2 from './math/vector2';
-import Angle from './math/angle';
-import Color from './math/color';
+import CONFIG from '../../config';
+import ASSETS from '../../assets';
+import Vector2 from '../math/vector2';
+import Angle from '../math/angle';
+import Color from '../math/color';
 import gl from './gl';
-import Player from '../game/player';
-import { default as Level, WALL_TEXTURE } from './level';
+import Player from '../../game/player';
+import { default as Level, WALL_TEXTURE } from '../level';
 import Bitmap from './bitmap';
 import Sprite from './sprite';
-import { CARDINAL } from './const';
-import { canvas } from './platform/canvas';
-import { WALL_TYPE } from '../game/walls-data';
+import { CARDINAL } from '../const';
+import { canvas } from '../platform/canvas';
+import { WALL_TYPE } from '../../game/walls-data';
 
 export interface Ray {
   a: Vector2;

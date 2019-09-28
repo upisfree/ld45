@@ -1,8 +1,8 @@
 import ASSETS from '../assets';
 import Vector2 from './math/vector2';
 import Color from './math/color';
-import Sprite from './sprite';
-import Bitmap from './bitmap';
+import Sprite from './render/sprite';
+import Bitmap from './render/bitmap';
 import NPC from '../game/npc';
 import { WALL_TYPE, WALLS_DATA } from '../game/walls-data';
 

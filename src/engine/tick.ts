@@ -1,4 +1,4 @@
-import gl from './gl';
+import gl from './render/gl';
 import Vector2 from './math/vector2';
 import Color from './math/color';
 import { keyboardListeners } from './platform/keyboard';
