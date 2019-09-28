@@ -27,6 +27,7 @@ const ASSETS = {
     'transparent': getEmptyTextureObject(),
     'skybox': getEmptyTextureObject(),
     'npc': getEmptyTextureObject(),
+    'floor': getEmptyTextureObject(),
   },
   SOUNDS: {
 

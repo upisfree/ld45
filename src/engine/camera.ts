@@ -55,7 +55,7 @@ class Camera {
 
     this.resize();
 
-    if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
+    if (CONFIG.RENDER_DEBUG_WALL_SIDES_TEXTURES) {
       this.nBitmap = ASSETS.TEXTURES['n'].bitmap;
       this.eBitmap = ASSETS.TEXTURES['e'].bitmap;
       this.sBitmap = ASSETS.TEXTURES['s'].bitmap;
@@ -69,10 +69,50 @@ class Camera {
 
     this.renderGround();
     this.renderSkybox();
-    this.renderWallsStripes();
+    this.renderWalls();
+    // this.renderFloor();
     this.renderSprites();
     // this.renderZBuffer();
   }
+
+  // private renderFloor(): void {
+  //   // TODO: в один луп пробежку по лучам
+  //   for (let i = 0; i < this.rays.length; i++) {
+  //     this.renderFloorStripe(this.rays[i]);
+  //   }
+  // }
+
+  // private renderFloorStripe(ray: Ray): void {
+  //   let floorBitmap = ASSETS.TEXTURES['floor'].bitmap;
+  //   let wallHeight = this.wh / ray.distance;
+  //   let floorHeight;
+  //   let drawX = this.rayWidth * ray.index;
+  //   let drawY;
+    
+  //   if (ray.distance !== -1) {
+  //     floorHeight = (this.wh - this.wh / ray.distance) / 2 - this.heightOffset;
+  //     drawY = this.wh / 2 + wallHeight / 2 + this.heightOffset;
+  //   } else {
+  //     // если рисуем пол для пустоты
+  //     floorHeight = this.wh / 2 - this.heightOffset;
+  //     drawY = this.wh / 2 + this.heightOffset;
+  //   }
+
+  //   gl.drawImage(
+  //     floorBitmap,
+  //     new Vector2(0, 0),
+  //     new Vector2(floorBitmap.width, floorBitmap.height),
+  //     new Vector2(600, 500),
+  //     new Vector2(50, 50),
+  //     3
+  //   );
+
+  //   // gl.drawRect(
+  //   //   new Vector2(drawX, drawY),
+  //   //   new Vector2(this.rayWidth, floorHeight),
+  //   //   new Color(255 * Math.random(), 255 * Math.random(), 255 * Math.random())
+  //   // );
+  // }
 
   public resize(): void {
     this.ww = canvas.width;
@@ -155,6 +195,12 @@ class Camera {
     };
   }
 
+  private renderWalls(): void {
+    for (let i = 0; i < this.rays.length; i++) {
+      this.renderWallStripe(this.rays[i]);
+    }
+  }
+
   private renderWallStripe(ray: Ray): void {
     this.fillWallStripeZBuffer(ray);
 
@@ -179,7 +225,7 @@ class Camera {
     // чтобы получить позицию текстуры полоски
     switch (ray.side) {
       case CARDINAL.NORTH:
-        if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
+        if (CONFIG.RENDER_DEBUG_WALL_SIDES_TEXTURES) {
           bitmap = this.nBitmap;
         };
 
@@ -189,7 +235,7 @@ class Camera {
         break;
 
       case CARDINAL.EAST:
-        if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
+        if (CONFIG.RENDER_DEBUG_WALL_SIDES_TEXTURES) {
           bitmap = this.eBitmap;
         };
 
@@ -198,7 +244,7 @@ class Camera {
         break;
       
       case CARDINAL.SOUTH:
-        if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
+        if (CONFIG.RENDER_DEBUG_WALL_SIDES_TEXTURES) {
           bitmap = this.sBitmap;
         };
 
@@ -207,7 +253,7 @@ class Camera {
         break;
 
       case CARDINAL.WEST:
-        if (CONFIG.RENDER_WALL_SIDES_TEXTURES) {
+        if (CONFIG.RENDER_DEBUG_WALL_SIDES_TEXTURES) {
           bitmap = this.wBitmap;
         };
 
@@ -253,12 +299,6 @@ class Camera {
         new Vector2(width, height),
         color
       );
-    }
-  }
-
-  private renderWallsStripes(): void {
-    for (let i = 0; i < this.rays.length; i++) {
-      this.renderWallStripe(this.rays[i]);
     }
   }
 

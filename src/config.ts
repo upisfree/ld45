@@ -6,7 +6,7 @@ const CONFIG = {
   FOG_COLOR: new Color(255, 255, 255),
   FOG_FACTOR: 1.5,
   LIGHTING_FAKE_CONTRAST: true,
-  RENDER_WALL_SIDES_TEXTURES: true
+  RENDER_DEBUG_WALL_SIDES_TEXTURES: false
 };
 
 export default CONFIG;

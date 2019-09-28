@@ -26,28 +26,15 @@ function init() {
   let player = new Player(camera, level, new Vector2(level.size / 2, level.size / 2), Math.PI / -2);
   let minimap = new Minimap(level, camera, new Vector2(20, 20));
 
-
   console.log(ASSETS, level, player, camera, minimap);
 
-  // new NPC(
-  //   ASSETS.TEXTURES['npc'].bitmap,
-  //   new Vector2(level.size / 2, level.size / 2 - 1),
-  //   level
-  // );
-
-  // new NPC(
-  //   ASSETS.TEXTURES['npc'].bitmap,
-  //   new Vector2(level.size / 2 + 0.5, level.size / 2 - 1),
-  //   level
-  // );
-
-  for (let i = 0; i < 10; i++) {
-    new NPC(
-      ASSETS.TEXTURES['npc'].bitmap,
-      new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
-      level
-    );
-  }
+  // for (let i = 0; i < 10; i++) {
+  //   new NPC(
+  //     ASSETS.TEXTURES['npc'].bitmap,
+  //     new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+  //     level
+  //   );
+  // }
 
   initKeyboard();
   addKeyboardListener(player.onKeyboardTick.bind(player));
