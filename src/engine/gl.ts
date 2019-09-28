@@ -22,8 +22,12 @@ namespace gl {
     context.beginPath();
 
     // точка, относительно которой транслейт — центр
-    context.translate(position.x + size.width / 2, position.y + size.height / 2);
+    let translateX = position.x + size.width / 2;
+    let translateY = position.y + size.height / 2;
+
+    context.translate(translateX, translateY);
     context.rotate(rotation);
+    // context.translate(-translateX, -translateY);
 
     if (color instanceof Color) {
       color = color.getRGBAString();
@@ -47,7 +51,13 @@ namespace gl {
     context.save();
 
     // точка, относительно которой транслейт — центр
+    // if (drawRotation !== 0) {}
+    let translateX = drawPosition.x + drawSize.width / 2;
+    let translateY = drawPosition.y + drawSize.height / 2;
+
+    context.translate(translateX, translateY);
     context.rotate(drawRotation);
+    context.translate(-translateX, -translateY);
 
     context.drawImage(
       bitmap.image,
