@@ -10,7 +10,7 @@ class Sprite {
   level: Level;
 
   collisionWith: Sprite | Player;
-  collisionTriggerDistance: number = 0.5;
+  collisionTriggerDistance: number = 1;
 
   constructor(bitmap: Bitmap, position: Vector2, level: Level) {
     this.bitmap = bitmap;
@@ -20,34 +20,17 @@ class Sprite {
     this.level.sprites.push(this);
   }
 
-  // public render(): void {
-
-  // }
-
+  // пока только игрок
   public detectCollisions(): void {
-    for (let i = 0; i < this.level.sprites.length; i++) {
-      let sprite = this.level.sprites[i];
+    let distance = Vector2.distance(this.position, this.level.player.position);
 
-      if (this === sprite) {
-        continue;
-      }
-
-      let distance = Vector2.distance(this.position, sprite.position);
-
-      if (distance <= this.collisionTriggerDistance) {
-        this.onCollision(sprite);
-      }
+    if (distance <= this.collisionTriggerDistance) {
+      this.onCollision(this.level.player);
     }
-
-    // let distance = Vector2.distance(this.position, player);
-
-    // if (distance <= this.collisionTriggerDistance) {
-    //   this.onCollision(player);
-    // }
   }
 
-  public onCollision(sprite: Sprite): void {
-    this.collisionWith = sprite;
+  public onCollision(trigger: Sprite | Player): void {
+    this.collisionWith = trigger;
   }
 }
 

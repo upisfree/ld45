@@ -82,9 +82,18 @@ class Level {
   }
 
   public randomize(): void {
+    let wallsCount = 6;
     for (let i = 0; i < this.size * this.size; i++) {
-      this.walls[i] = Math.random() < 0.25 ? 1 : 0;
+      let r = Math.floor(Math.random() * (wallsCount - 0 + 1) + 0);
+
+      if (Math.random() > 0.1) {
+        r = 0;
+      }
+
+      this.walls[i] = r;
     }
+
+    console.log(this.walls);
   }
 
   public parseFromBitmap(bitmap: Bitmap): void {

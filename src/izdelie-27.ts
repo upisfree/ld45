@@ -16,26 +16,66 @@ import gl from './engine/render/gl';
 
 load(init);
 
+function getRandomNPC(level) {
+  let count = 3;
+  let r = Math.floor(Math.random() * (count - 0 + 1) + 0);
+
+  switch (r) {
+    case 0:
+      return new NPC(
+        ASSETS.TEXTURES['daemon-1'].bitmap,
+        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+        level,
+        1,
+        64
+      );
+
+    case 1:
+      return new NPC(
+        ASSETS.TEXTURES['daemon-2'].bitmap,
+        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+        level,
+        1,
+        64
+      );
+
+    case 2:
+      return new NPC(
+        ASSETS.TEXTURES['daemon-3'].bitmap,
+        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+        level,
+        10,
+        200
+      );
+
+    case 3:
+      return new NPC(
+        ASSETS.TEXTURES['daemon-4'].bitmap,
+        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+        level,
+        4,
+        48
+      );
+  }
+}
+
 function init() {
   ASSETS.MAP_BITMAP = ASSETS.TEXTURES['map'].bitmap;
 
   let level = new Level(0, null, [], ASSETS.TEXTURES['skybox'].bitmap, false);
   level.parseFromBitmap(ASSETS.MAP_BITMAP);
+  level.randomize();
 
   let camera = new Camera(level);
   let player = new Player(camera, level, new Vector2(level.size / 2, level.size / 2), Math.PI / -2);
-  let minimap = new Minimap(level, camera, new Vector2(20, 20));
+  // let minimap = new Minimap(level, camera, new Vector2(1, 1));
 
   level.player = player;
 
-  console.log(ASSETS, level, player, camera, minimap);
+  // console.log(ASSETS, level, player, camera, minimap);
 
-  for (let i = 0; i < 10; i++) {
-    new NPC(
-      ASSETS.TEXTURES['npc'].bitmap,
-      new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
-      level
-    );
+  for (let i = 0; i < 100; i++) {
+    getRandomNPC(level);
   }
 
   initKeyboard();
@@ -46,15 +86,16 @@ function init() {
 
   tick(() => {
     camera.render();
-    minimap.render();
+    // minimap.render();
 
     player.update();
     level.update();
 
-    // camera.fov += Math.cos(performance.now() / 400) / 50;
+    camera.fov += Math.cos(performance.now() / 400) / 100;
   });
 
   window.addEventListener('resize', resize.bind(this, canvas, camera));
+  window.addEventListener('click', player.onMouseClick.bind(player));
   resize(canvas, camera);
 };
 
@@ -107,3 +148,18 @@ function load(callback) {
 
   Promise.all(promises).then(callback);
 }
+
+(<any>window).sound = new (<any>window).Howl({
+  src: ['./assets/sound.mp3'],
+  sprite: {
+    rain: [0, 9180, true],
+    thunder: [9180, 14870],
+    scream1: [24050, 960],
+    scream2: [25010, 2020],
+    scream3: [27030, 5000],
+    music: [162030, 626000, true],
+  },
+  volume: 5
+});
+
+(<any>window).sound.play('music');

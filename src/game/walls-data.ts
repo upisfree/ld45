@@ -3,31 +3,50 @@ import Color from '../engine/math/color';
 const enum WALL_TYPE {
   VOID = -1,
   AIR = 0,
-  CONCRETE = 1,
-  WOOD = 2,
+  ONE = 1,
+  TWO = 2,
+  THREE = 3,
+  FOUR = 4,
+  FIVE = 5,
+  SIX = 6,
 };
 
 const WALLS_DATA = [
-  // {
-  //   name: 'void',
-  //   code: WALL_TYPE.VOID,
-  //   color: new Color(0, 0, 0, 0)
-  // },
   {
     name: 'air',
     code: WALL_TYPE.AIR,
     color: new Color(0, 0, 0, 0)
   },
   {
-    name: 'leaves',
-    code: WALL_TYPE.CONCRETE,
+    name: 'wall-1',
+    code: WALL_TYPE.ONE,
     color: new Color(0, 0, 0, 255)
   },
   {
-    name: 'mio',
-    code: WALL_TYPE.WOOD,
+    name: 'wall-2',
+    code: WALL_TYPE.TWO,
     color: new Color(255, 0, 0, 255)
   },
+  {
+    name: 'wall-3',
+    code: WALL_TYPE.THREE,
+    color: new Color(255, 0, 0, 255)
+  },
+  {
+    name: 'wall-4',
+    code: WALL_TYPE.FOUR,
+    color: new Color(255, 0, 0, 255)
+  },
+  {
+    name: 'wall-5',
+    code: WALL_TYPE.FIVE,
+    color: new Color(255, 0, 0, 255)
+  },
+  {
+    name: 'wall-6',
+    code: WALL_TYPE.SIX,
+    color: new Color(255, 0, 0, 255)
+  }
 ];
 
 export {

@@ -5,6 +5,7 @@ import Angle from '../math/angle';
 import Color from '../math/color';
 import gl from './gl';
 import Player from '../../game/player';
+import NPC from '../../game/npc';
 import { default as Level, WALL_TEXTURE } from '../level';
 import Bitmap from './bitmap';
 import Sprite from './sprite';
@@ -41,6 +42,8 @@ class Camera {
   ww: number; // window width
   wh: number; // window height
 
+  gunOffset = 0;
+
   nBitmap: Bitmap;
   eBitmap: Bitmap;
   sBitmap: Bitmap;
@@ -48,7 +51,7 @@ class Camera {
 
   constructor(
     level: Level,
-    fov: number = Math.PI / 4
+    fov: number = Math.PI / 2
   ) {
     this.level = level;
     this.fov = fov;
@@ -71,8 +74,44 @@ class Camera {
     this.renderSkybox();
     this.renderWalls();
     // this.renderFloor();
-    this.renderSprites();
+    this.renderNPCs();
+    this.renderGun();
     // this.renderZBuffer();
+
+    this.postProcess();
+  }
+
+  private renderGun(): void {
+    let bitmap = ASSETS.TEXTURES['gun'].bitmap;
+
+    this.gunOffset -= 20;
+
+    if (this.gunOffset < 0) {
+      this.gunOffset = 0;
+    }
+
+    let w = this.ww / 3;
+    let h = w;
+    let x = (this.ww + 50) - w + this.heightOffset / 2 - this.gunOffset;
+    let y = (this.wh + 50) - h + this.heightOffset * 2 - this.gunOffset;
+
+    gl.drawImage(
+      bitmap,
+      new Vector2(0, 0),
+      new Vector2(bitmap.width, bitmap.height),
+      new Vector2(x, y),
+      new Vector2(w, h)
+    );
+  }
+
+  private postProcess(): void {
+    let a = 255 - this.level.player.health / 100 * 255;
+
+    gl.drawRect(
+      new Vector2(0, 0),
+      new Vector2(this.ww, this.wh),
+      new Color(255 * Math.random(), 0, 0, a * 2)
+    );
   }
 
   // private renderFloor(): void {
@@ -302,7 +341,7 @@ class Camera {
     }
   }
 
-  private renderSprite(sprite: Sprite): void {
+  private renderNPC(sprite: NPC): void {
     let rotation = Angle.betweenTwoPoints(this.position, sprite.position);
     let distance = Vector2.distance(this.position, sprite.position);
 
@@ -351,7 +390,7 @@ class Camera {
         continue;
       };
 
-      let textureX = Math.floor((j - startX) * sprite.bitmap.width / width);
+      let textureX = sprite.frame * sprite.frameWidth + Math.floor((j - startX) * sprite.frameWidth / width);
 
       gl.drawImage(
         sprite.bitmap,
@@ -376,11 +415,11 @@ class Camera {
     }
   }
 
-  private renderSprites(): void {
+  private renderNPCs(): void {
     this.sortSprites();
 
-    for (let i = 0; i < this.level.sprites.length; i++) {
-      this.renderSprite(this.level.sprites[i]);
+    for (let i = 0; i < this.level.npcs.length; i++) {
+      this.renderNPC(this.level.npcs[i]);
     }
   }
 
@@ -392,13 +431,19 @@ class Camera {
   }
 
   private renderGround(): void {
-    gl.drawGradient(
+    gl.drawRect(
       new Vector2(0, 0),
       new Vector2(this.ww, this.wh),
-      0,
-      new Color(255, 255, 255),
       new Color(0, 0, 0)
     );
+
+    // gl.drawGradient(
+    //   new Vector2(0, 0),
+    //   new Vector2(this.ww, this.wh),
+    //   0,
+    //   new Color(255, 255, 255),
+    //   new Color(0, 0, 0)
+    // );
   }
 
   private renderSkybox(): void {
@@ -426,6 +471,12 @@ class Camera {
         new Vector2(w, h)
       );
     }
+
+    gl.drawRect(
+      new Vector2(0, 0),
+      new Vector2(this.ww, h),
+      new Color(Math.random() * 64, 0, Math.random() * 32, Math.random() * 128)
+    );
   }
 
   private renderZBuffer(): void {

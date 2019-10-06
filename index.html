@@ -36,12 +36,28 @@ canvas {
   white-space: pre;
   z-index: 1;
 }
+
+#count {
+  position: absolute;
+  font-size: 64pt;
+  margin: 20px;
+  padding: 0;
+  font-family: 'Helvetica';
+  left: 0;
+  top: 0;
+  user-select: none;
+  color: #fff;
+}
     </style>
   </head>
   <body>
     <!-- <p id="debug-stats"></p> -->
     <canvas id="render-output"></canvas>
 
+    <h1 id="count">0</h1>
+
+    <script src="./lib/howler.core.min.js"></script>
+    <script src="./lib/howler.spatial.min.js"></script>
     <script src="./bin/izdelie-27.js"></script>
   </body>
 </html>

@@ -2,15 +2,61 @@ import { DIRECTION, KEY_CODE } from '../engine/const';
 import Vector2 from '../engine/math/vector2';
 import Angle from '../engine/math/angle';
 import Camera from '../engine/render/camera';
+import NPC from './npc';
+import ASSETS from '../assets';
 import Level from '../engine/level';
 import keyboard from '../engine/platform/keyboard';
 import mouse from '../engine/platform/mouse';
+
+function getRandomNPC(level) {
+  let count = 3;
+  let r = Math.floor(Math.random() * (count - 0 + 1) + 0);
+
+  switch (r) {
+    case 0:
+      return new NPC(
+        ASSETS.TEXTURES['daemon-1'].bitmap,
+        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+        level,
+        1,
+        64
+      );
+
+    case 1:
+      return new NPC(
+        ASSETS.TEXTURES['daemon-2'].bitmap,
+        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+        level,
+        1,
+        64
+      );
+
+    case 2:
+      return new NPC(
+        ASSETS.TEXTURES['daemon-3'].bitmap,
+        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+        level,
+        10,
+        200
+      );
+
+    case 3:
+      return new NPC(
+        ASSETS.TEXTURES['daemon-4'].bitmap,
+        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+        level,
+        4,
+        48
+      );
+  }
+}
 
 class Player {
   camera: Camera;
   level: Level;
   position: Vector2;
   rotation: number = 0;
+  health: number = 100;
 
   // moveSpeed: number = 0.05;
   // rotateSpeed: number = Math.PI / 128;
@@ -21,8 +67,8 @@ class Player {
   moveSpeed: number = 0.1;
   rotateSpeed: number = Math.PI / 64;
   noddlingStabilizationSpeed: number = 20;
-  noddlingFrequency: number = 100;
-  noddlingForce: number = 4;
+  noddlingFrequency: number = 120;
+  noddlingForce: number = 5;
 
   isMoving: boolean = false;
 
@@ -42,6 +88,15 @@ class Player {
     this.nullifyHeightOffset();
 
     this.isMoving = false;
+    this.health += 1;
+    
+    if (this.health > 100) {
+      this.health = 100;
+    }
+
+    if (this.health < 0) {
+      location.reload();
+    }
   }
 
   move(direction: DIRECTION): void {
@@ -138,6 +193,32 @@ class Player {
       this.move(DIRECTION.RIGHT);
     } else if (mouse.movementX < 0) {
       this.move(DIRECTION.LEFT);
+    }
+  }
+
+  onMouseClick(): void {
+    this.camera.gunOffset = 200;
+
+    let r = Math.floor(Math.random() * (2 - 0 + 1) + 0);
+    r++;
+    let s = (<any>window).sound.play('scream' + r);
+    (<any>window).sound.volume(2, s);
+
+    // if (Math.random() > 0.5) {
+      getRandomNPC(this.level);      
+      getRandomNPC(this.level);      
+      getRandomNPC(this.level);      
+    // }
+
+    for (let i = 0; i < this.level.npcs.length; i++) {
+      let n = this.level.npcs[i];
+      let d = Vector2.distance(this.position, n.position);
+
+      if (d < 1) {
+        n.destroy();
+
+        break;
+      }
     }
   }
 

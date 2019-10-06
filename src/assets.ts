@@ -4,6 +4,10 @@ import { WALL_TYPE } from './game/walls-data';
 interface TextureAsset {
   bitmap: Bitmap;
   wallType?: WALL_TYPE;
+
+  animated?: boolean;
+  bitmapWidth?: number;
+  bitmapHeight?: number;
 }
 
 function getEmptyTextureObject(wallType?: WALL_TYPE): TextureAsset {
@@ -22,12 +26,21 @@ const ASSETS = {
     'e': getEmptyTextureObject(),
     's': getEmptyTextureObject(),
     'w': getEmptyTextureObject(),
-    'leaves-1': getEmptyTextureObject(WALL_TYPE.CONCRETE),
-    'leaves-2': getEmptyTextureObject(WALL_TYPE.WOOD),
+    'wall-1': getEmptyTextureObject(WALL_TYPE.ONE),
+    'wall-2': getEmptyTextureObject(WALL_TYPE.TWO),
+    'wall-3': getEmptyTextureObject(WALL_TYPE.THREE),
+    'wall-4': getEmptyTextureObject(WALL_TYPE.FOUR),
+    'wall-5': getEmptyTextureObject(WALL_TYPE.FIVE),
+    'wall-6': getEmptyTextureObject(WALL_TYPE.SIX),
     'transparent': getEmptyTextureObject(),
     'skybox': getEmptyTextureObject(),
     'npc': getEmptyTextureObject(),
     'floor': getEmptyTextureObject(),
+    'gun': getEmptyTextureObject(),
+    'daemon-1': getEmptyTextureObject(),
+    'daemon-2': getEmptyTextureObject(),
+    'daemon-3': getEmptyTextureObject(),
+    'daemon-4': getEmptyTextureObject(),
   },
   SOUNDS: {
 
