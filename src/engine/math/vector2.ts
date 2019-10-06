@@ -52,6 +52,10 @@ class Vector2 {
 
     return this;
   }
+
+  public copy(): Vector2 {
+    return new Vector2(this.x, this.y);
+  }
 }
 
 export default Vector2;

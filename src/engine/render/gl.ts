@@ -1,6 +1,6 @@
-import { canvas, context } from './platform/canvas';
-import Vector2 from './math/vector2';
-import Color from './math/color';
+import { canvas, context } from '../platform/canvas';
+import Vector2 from '../math/vector2';
+import Color from '../math/color';
 import Bitmap from './bitmap';
 
 namespace gl {

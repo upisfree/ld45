@@ -22,7 +22,7 @@ class Player {
   rotateSpeed: number = Math.PI / 64;
   noddlingStabilizationSpeed: number = 20;
   noddlingFrequency: number = 100;
-  noddlingForce: number = 6;
+  noddlingForce: number = 4;
 
   isMoving: boolean = false;
 

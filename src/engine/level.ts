@@ -4,6 +4,7 @@ import Color from './math/color';
 import Sprite from './render/sprite';
 import Bitmap from './render/bitmap';
 import NPC from '../game/npc';
+import Player from '../game/player';
 import { WALL_TYPE, WALLS_DATA } from '../game/walls-data';
 
 const WALL_TEXTURE = { };
@@ -19,6 +20,7 @@ class Level {
   walls: Uint8Array;
   sprites: Sprite[];
   npcs: NPC[];
+  player: Player;
   skybox: Bitmap;
 
   public static isWallTypeVoidOrAir(type: WALL_TYPE): boolean {

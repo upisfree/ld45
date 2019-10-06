@@ -3,7 +3,7 @@ import Color from '../engine/math/color';
 import gl from '../engine/render/gl';
 import { default as Level, WALL_TEXTURE } from '../engine/level';
 import { WALL_TYPE } from './walls-data';
-import Camera from '../engine/camera';
+import Camera from '../engine/render/camera';
 
 export default class Minimap {
   level: Level;

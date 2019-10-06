@@ -6,7 +6,7 @@ import { initKeyboard, addKeyboardListener } from './engine/platform/keyboard';
 import { initMouse, addMouseListener } from './engine/platform/mouse';
 import Vector2 from './engine/math/vector2';
 import Color from './engine/math/color';
-import Camera from './engine/camera';
+import Camera from './engine/render/camera';
 import Level from './engine/level';
 import Player from './game/player';
 import Minimap from './game/minimap';
@@ -26,15 +26,17 @@ function init() {
   let player = new Player(camera, level, new Vector2(level.size / 2, level.size / 2), Math.PI / -2);
   let minimap = new Minimap(level, camera, new Vector2(20, 20));
 
+  level.player = player;
+
   console.log(ASSETS, level, player, camera, minimap);
 
-  // for (let i = 0; i < 10; i++) {
-  //   new NPC(
-  //     ASSETS.TEXTURES['npc'].bitmap,
-  //     new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
-  //     level
-  //   );
-  // }
+  for (let i = 0; i < 10; i++) {
+    new NPC(
+      ASSETS.TEXTURES['npc'].bitmap,
+      new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
+      level
+    );
+  }
 
   initKeyboard();
   addKeyboardListener(player.onKeyboardTick.bind(player));
