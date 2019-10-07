@@ -78,7 +78,7 @@ class NPC extends Sprite {
 
     let r = Math.floor(Math.random() * (7 - 1 + 1) + 1);
 
-    if (!onRestart || (onRestart && Math.random() < 0.2)) {
+    if (!onRestart || (onRestart && Math.random() < 0.05)) {
       let s = (<any>window).sound.play('scream' + r);
       (<any>window).sound.volume(0.5, s);
       (<any>window).sound.fade(0.85, 1, (<any>window).sound.duration(s) * 0.15, s);

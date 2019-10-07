@@ -85,10 +85,12 @@ class Camera {
       this.gunOffset = 0;
     }
 
+    let now = Date.now();
+
     let w = this.ww / 3.5;
     let h = w;
-    let x = (this.ww + 50) - w + this.heightOffset / 2.5 - this.gunOffset;
-    let y = (this.wh + 50) - h + this.heightOffset * 1 - this.gunOffset;
+    let x = (this.ww + 50) - w + this.heightOffset / 2.5 - this.gunOffset + (Math.cos(now / 500) * 15);
+    let y = (this.wh + 50) - h + this.heightOffset * 1 - this.gunOffset + (Math.cos(now / 500) * 20);
 
     gl.drawImage(
       bitmap,
@@ -96,7 +98,7 @@ class Camera {
       new Vector2(bitmap.width, bitmap.height),
       new Vector2(x, y),
       new Vector2(w, h),
-      Math.PI / 16
+      Math.PI / (16 - Math.cos(now / 500) * 5)
     );
   }
 

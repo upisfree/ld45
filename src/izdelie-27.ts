@@ -206,7 +206,7 @@ function load(callback) {
     scream5: [8440, 3000],
     scream6: [12040, 3920],
     scream7: [16640, 1400],
-    music: [18960, 739880, true],
+    music: [19190, 739880, true],
   },
   volume: 1
 });
