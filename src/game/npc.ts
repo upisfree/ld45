@@ -16,6 +16,7 @@ class NPC extends Sprite {
 
   moveSpeed: number;
   destroyed: boolean = false;
+  corpse: boolean = false;
 
   constructor(bitmap: Bitmap, position: Vector2, level: Level, framesCount?: number, frameWidth?: number) {
     super(bitmap, position, level);
@@ -39,13 +40,13 @@ class NPC extends Sprite {
 
     let t = this.level.getWallType(collisionVector);
 
-    if (!Level.isWallTypeVoidOrAir(t)) {
-      this.position.add(diff);
-    } else {
-      this.position.sub(diff);
+    if (!this.corpse) {
+      if (!Level.isWallTypeVoidOrAir(t)) {
+        this.position.add(diff);
+      } else {
+        this.position.sub(diff);
+      }
     }
-
-    // this.position.sub(diff);
 
     if (Math.random() > 0.65) {
       this.frame++;
@@ -55,11 +56,15 @@ class NPC extends Sprite {
       if (!this.destroyed) {
         this.frame = 0;
       } else {
-        this.level.npcs = this.level.npcs.filter(n => n !== this);
-        this.level.sprites = this.level.sprites.filter(s => s !== this);
+        // this.level.npcs = this.level.npcs.filter(n => n !== this);
+        // this.level.sprites = this.level.sprites.filter(s => s !== this);
 
-        (<any>window).kills++;
-        document.querySelector('#count').textContent = (<any>window).kills;
+        this.bitmap = ASSETS.TEXTURES['corpse'].bitmap;
+        this.frame = 0;
+        this.framesCount = 8;
+        this.frameWidth = 51;
+
+        this.corpse = true;
       }
     }
   }
@@ -74,13 +79,19 @@ class NPC extends Sprite {
     let r = Math.floor(Math.random() * (7 - 1 + 1) + 1);
 
     let s = (<any>window).sound.play('scream' + r);
+    (<any>window).sound.volume(0.5, s);
     (<any>window).sound.fade(0.85, 1, (<any>window).sound.duration(s) * 0.15, s);
+
+    (<any>window).kills++;
+    document.querySelector('#count').textContent = (<any>window).kills;
   }
 
   onCollision(trigger: Sprite | Player): void {
     this.collisionWith = trigger;
 
-    this.level.player.health -= 2;
+    if (!this.corpse) {
+      this.level.player.health -= 2;      
+    }
   }
 }
 

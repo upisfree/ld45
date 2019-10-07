@@ -150,16 +150,11 @@ class Player {
   attack(): void {
     this.camera.gunOffset = 200;
 
-    // let r = Math.floor(Math.random() * (2 - 0 + 1) + 0);
-    // r++;
-    // let s = (<any>window).sound.play('scream' + r);
-    // (<any>window).sound.volume(1, s);
-
     for (let i = 0; i < this.level.npcs.length; i++) {
       let n = this.level.npcs[i];
       let d = Vector2.distance(this.position, n.position);
 
-      if (d < 1) {
+      if (d < 1 && !n.corpse && !n.destroyed) {
         n.destroy();
 
         break;

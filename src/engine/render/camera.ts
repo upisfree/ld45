@@ -260,38 +260,22 @@ class Camera {
     // чтобы получить позицию текстуры полоски
     switch (ray.side) {
       case CARDINAL.NORTH:
-        if (CONFIG.RENDER_DEBUG_WALL_SIDES_TEXTURES) {
-          bitmap = this.nBitmap;
-        };
-
         // инвертируем текстуру
         fractional = 1 - fractionalX;
 
         break;
 
       case CARDINAL.EAST:
-        if (CONFIG.RENDER_DEBUG_WALL_SIDES_TEXTURES) {
-          bitmap = this.eBitmap;
-        };
-
         fractional = 1 - fractionalY;
 
         break;
       
       case CARDINAL.SOUTH:
-        if (CONFIG.RENDER_DEBUG_WALL_SIDES_TEXTURES) {
-          bitmap = this.sBitmap;
-        };
-
         fractional = fractionalX;
 
         break;
 
       case CARDINAL.WEST:
-        if (CONFIG.RENDER_DEBUG_WALL_SIDES_TEXTURES) {
-          bitmap = this.wBitmap;
-        };
-
         fractional = fractionalY;
 
         break;
@@ -471,7 +455,7 @@ class Camera {
     gl.drawRect(
       new Vector2(0, 0),
       new Vector2(this.ww, h),
-      new Color(Math.random() * 64, 0, Math.random() * 32, Math.random() * 128)
+      new Color(0, 0, 0, Math.random() * 256)
     );
   }
 
