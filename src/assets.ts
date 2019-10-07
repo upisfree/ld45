@@ -37,6 +37,7 @@ const ASSETS = {
     'npc': getEmptyTextureObject(),
     'floor': getEmptyTextureObject(),
     'gun': getEmptyTextureObject(),
+    'explosion': getEmptyTextureObject(),
     'daemon-1': getEmptyTextureObject(),
     'daemon-2': getEmptyTextureObject(),
     'daemon-3': getEmptyTextureObject(),

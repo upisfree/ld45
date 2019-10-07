@@ -70,11 +70,14 @@ function init() {
   let player = new Player(camera, level, new Vector2(level.size / 2, level.size / 2), Math.PI / -2);
   // let minimap = new Minimap(level, camera, new Vector2(1, 1));
 
+  camera.position = player.position;
+  camera.rotation = player.rotation;
+
   level.player = player;
 
   // console.log(ASSETS, level, player, camera, minimap);
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 10; i++) {
     getRandomNPC(level);
   }
 
@@ -82,7 +85,7 @@ function init() {
   addKeyboardListener(player.onKeyboardTick.bind(player));
 
   initMouse();
-  addMouseListener(player.onMouseTick.bind(player));
+  // addMouseListener(player.onMouseTick.bind(player));
 
   tick(() => {
     camera.render();
@@ -91,11 +94,17 @@ function init() {
     player.update();
     level.update();
 
-    camera.fov += Math.cos(performance.now() / 400) / 100;
+    camera.fov += Math.cos(Date.now() / 400) / 175;
   });
 
   window.addEventListener('resize', resize.bind(this, canvas, camera));
-  window.addEventListener('click', player.onMouseClick.bind(player));
+
+  window.addEventListener('keyup', (event) => {
+    if (event.keyCode === 32) {
+      player.attack();      
+    }
+  });
+  // window.addEventListener('click', player.onMouseClick.bind(player));
   resize(canvas, camera);
 };
 
@@ -159,7 +168,7 @@ function load(callback) {
     scream3: [27030, 5000],
     music: [162030, 626000, true],
   },
-  volume: 5
+  volume: 2
 });
 
 (<any>window).sound.play('music');

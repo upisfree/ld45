@@ -85,8 +85,9 @@ class Level {
     let wallsCount = 6;
     for (let i = 0; i < this.size * this.size; i++) {
       let r = Math.floor(Math.random() * (wallsCount - 0 + 1) + 0);
+      let s2 = this.size / 2;
 
-      if (Math.random() > 0.1) {
+      if (Math.random() > 0.1 || i === s2 * this.size + s2) {
         r = 0;
       }
 

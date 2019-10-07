@@ -1,3 +1,4 @@
+import ASSETS from '../assets';
 import Angle from '../engine/math/angle';
 import Vector2 from '../engine/math/vector2';
 import Bitmap from '../engine/render/bitmap';
@@ -14,6 +15,7 @@ class NPC extends Sprite {
   frameWidth: number = 0;
 
   moveSpeed: number;
+  destroyed: boolean = false;
 
   constructor(bitmap: Bitmap, position: Vector2, level: Level, framesCount?: number, frameWidth?: number) {
     super(bitmap, position, level);
@@ -46,20 +48,29 @@ class NPC extends Sprite {
     // this.position.sub(diff);
 
     if (Math.random() > 0.65) {
-      this.frame++;      
+      this.frame++;
     }
 
+
     if (this.frame >= this.framesCount) {
-      this.frame = 0;
+      if (!this.destroyed) {
+        this.frame = 0;
+      } else {
+        this.level.npcs = this.level.npcs.filter(n => n !== this);
+        this.level.sprites = this.level.sprites.filter(s => s !== this);
+
+        (<any>window).kills++;
+        document.querySelector('#count').textContent = (<any>window).kills;
+      }
     }
   }
 
   destroy() {
-    this.level.npcs = this.level.npcs.filter(n => n !== this);
-    this.level.sprites = this.level.sprites.filter(s => s !== this);
-
-    (<any>window).kills++;
-    document.querySelector('#count').textContent = (<any>window).kills;
+    this.destroyed = true;
+    this.bitmap = ASSETS.TEXTURES['explosion'].bitmap;
+    this.frame = 0;
+    this.framesCount = 6;
+    this.frameWidth = 32;
   }
 
   onCollision(trigger: Sprite | Player): void {

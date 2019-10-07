@@ -58,12 +58,6 @@ class Player {
   rotation: number = 0;
   health: number = 100;
 
-  // moveSpeed: number = 0.05;
-  // rotateSpeed: number = Math.PI / 128;
-  // noddlingStabilizationSpeed: number = 20;
-  // noddlingFrequency: number = 100;
-  // noddlingForce: number = 0;
-
   moveSpeed: number = 0.1;
   rotateSpeed: number = Math.PI / 64;
   noddlingStabilizationSpeed: number = 20;
@@ -196,13 +190,13 @@ class Player {
     }
   }
 
-  onMouseClick(): void {
+  attack(): void {
     this.camera.gunOffset = 200;
 
     let r = Math.floor(Math.random() * (2 - 0 + 1) + 0);
     r++;
     let s = (<any>window).sound.play('scream' + r);
-    (<any>window).sound.volume(2, s);
+    (<any>window).sound.volume(1, s);
 
     // if (Math.random() > 0.5) {
       getRandomNPC(this.level);      
