@@ -20,6 +20,7 @@ body {
   padding: 0;
   overflow: hidden;
   font-family: 'NewsgeekSerif';
+  user-select: none;
 }
 
 canvas {
@@ -39,12 +40,62 @@ canvas {
   user-select: none;
   color: rgba(255, 255, 255, 0.75);
 }
+
+#text {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 100;
+  color: #fff;
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0;
+}
+
+#title {
+  font-size: 128pt;
+}
+
+#author {
+  font-size: 32pt;
+}
+
+#manual {
+  font-size: 20pt;
+  margin: 12%;
+}
+
+#title, #manual {
+  display: none;
+}
     </style>
   </head>
   <body>
     <canvas id="render-output"></canvas>
 
     <h1 id="count">0</h1>
+
+    <div id="text">
+      <h1 id="author" class="center">a Senya Pugach's game</h1>
+      <h1 id="title" class="center">Crybaby</h1>
+
+      <p id="manual">
+use your knife to kill those who never cry<br>
+find and kill them all
+<br><br><br>
+wasd or arrows to move<br>
+space to kill<br>
+R to restart
+<!-- H for help -->
+      </p>
+    </div>
 
     <script src="./lib/howler.core.min.js"></script>
     <script src="./lib/howler.spatial.min.js"></script>

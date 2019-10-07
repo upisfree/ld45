@@ -214,3 +214,18 @@ function load(callback) {
 music = (<any>window).sound.play('music');
 
 (<any>window).restart = restart;
+
+setTimeout(() => {
+  (<any>document.querySelector('#author')).style.display = 'none';
+  (<any>document.querySelector('#title')).style.display = 'block';
+}, 4000);
+
+setTimeout(() => {
+  (<any>document.querySelector('#title')).style.display = 'none';
+  (<any>document.querySelector('#manual')).style.display = 'block';
+}, 8000);
+
+setTimeout(() => {
+  (<any>document.querySelector('#manual')).style.display = 'none';
+  (<any>document.querySelector('#text')).style.display = 'none';
+}, 17000);
