@@ -44,11 +44,6 @@ class Camera {
 
   gunOffset = 0;
 
-  nBitmap: Bitmap;
-  eBitmap: Bitmap;
-  sBitmap: Bitmap;
-  wBitmap: Bitmap;
-
   constructor(
     level: Level,
     fov: number = Math.PI / 2

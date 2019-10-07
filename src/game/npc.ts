@@ -51,7 +51,6 @@ class NPC extends Sprite {
       this.frame++;
     }
 
-
     if (this.frame >= this.framesCount) {
       if (!this.destroyed) {
         this.frame = 0;
@@ -71,6 +70,11 @@ class NPC extends Sprite {
     this.frame = 0;
     this.framesCount = 6;
     this.frameWidth = 32;
+
+    let r = Math.floor(Math.random() * (7 - 1 + 1) + 1);
+
+    let s = (<any>window).sound.play('scream' + r);
+    (<any>window).sound.fade(0.85, 1, (<any>window).sound.duration(s) * 0.15, s);
   }
 
   onCollision(trigger: Sprite | Player): void {

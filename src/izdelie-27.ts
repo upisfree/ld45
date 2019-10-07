@@ -1,3 +1,4 @@
+import CONFIG from './config';
 import ASSETS from './assets';
 import tick from './engine/tick';
 import resize from './engine/platform/resize';
@@ -16,7 +17,9 @@ import gl from './engine/render/gl';
 
 load(init);
 
-function getRandomNPC(level) {
+let music;
+
+function spawnRandomNPC(level) {
   let count = 3;
   let r = Math.floor(Math.random() * (count - 0 + 1) + 0);
 
@@ -75,17 +78,15 @@ function init() {
 
   level.player = player;
 
-  // console.log(ASSETS, level, player, camera, minimap);
-
-  for (let i = 0; i < 10; i++) {
-    getRandomNPC(level);
-  }
+  // console.log(ASSETS, level, player, camera);
 
   initKeyboard();
   addKeyboardListener(player.onKeyboardTick.bind(player));
 
   initMouse();
   // addMouseListener(player.onMouseTick.bind(player));
+
+  console.log
 
   tick(() => {
     camera.render();
@@ -94,8 +95,21 @@ function init() {
     player.update();
     level.update();
 
+    let musicValue = 1 + (1 - player.health / 100) * 50;
+    (<any>window).sound.volume(musicValue, music);
+
     camera.fov += Math.cos(Date.now() / 400) / 175;
+
+    if (Math.random() < CONFIG.NPC_SPAWN_CHANGE) {
+      console.log('npc');
+
+      spawnRandomNPC(level);
+    }
   });
+
+  setInterval(() => {
+    CONFIG.NPC_SPAWN_CHANGE *= 1.25;
+  }, 15000);
 
   window.addEventListener('resize', resize.bind(this, canvas, camera));
 
@@ -161,14 +175,16 @@ function load(callback) {
 (<any>window).sound = new (<any>window).Howl({
   src: ['./assets/sound.mp3'],
   sprite: {
-    rain: [0, 9180, true],
-    thunder: [9180, 14870],
-    scream1: [24050, 960],
-    scream2: [25010, 2020],
-    scream3: [27030, 5000],
-    music: [162030, 626000, true],
+    scream1: [0, 760],
+    scream2: [1160, 560],
+    scream3: [2240, 2800],
+    scream4: [5520, 2320],
+    scream5: [8440, 3000],
+    scream6: [12040, 3920],
+    scream7: [16640, 1400],
+    music: [18960, 739880, true],
   },
-  volume: 2
+  volume: 1
 });
 
-(<any>window).sound.play('music');
+music = (<any>window).sound.play('music');

@@ -8,49 +8,6 @@ import Level from '../engine/level';
 import keyboard from '../engine/platform/keyboard';
 import mouse from '../engine/platform/mouse';
 
-function getRandomNPC(level) {
-  let count = 3;
-  let r = Math.floor(Math.random() * (count - 0 + 1) + 0);
-
-  switch (r) {
-    case 0:
-      return new NPC(
-        ASSETS.TEXTURES['daemon-1'].bitmap,
-        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
-        level,
-        1,
-        64
-      );
-
-    case 1:
-      return new NPC(
-        ASSETS.TEXTURES['daemon-2'].bitmap,
-        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
-        level,
-        1,
-        64
-      );
-
-    case 2:
-      return new NPC(
-        ASSETS.TEXTURES['daemon-3'].bitmap,
-        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
-        level,
-        10,
-        200
-      );
-
-    case 3:
-      return new NPC(
-        ASSETS.TEXTURES['daemon-4'].bitmap,
-        new Vector2(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())),
-        level,
-        4,
-        48
-      );
-  }
-}
-
 class Player {
   camera: Camera;
   level: Level;
@@ -193,16 +150,10 @@ class Player {
   attack(): void {
     this.camera.gunOffset = 200;
 
-    let r = Math.floor(Math.random() * (2 - 0 + 1) + 0);
-    r++;
-    let s = (<any>window).sound.play('scream' + r);
-    (<any>window).sound.volume(1, s);
-
-    // if (Math.random() > 0.5) {
-      getRandomNPC(this.level);      
-      getRandomNPC(this.level);      
-      getRandomNPC(this.level);      
-    // }
+    // let r = Math.floor(Math.random() * (2 - 0 + 1) + 0);
+    // r++;
+    // let s = (<any>window).sound.play('scream' + r);
+    // (<any>window).sound.volume(1, s);
 
     for (let i = 0; i < this.level.npcs.length; i++) {
       let n = this.level.npcs[i];

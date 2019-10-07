@@ -6,7 +6,7 @@ const CONFIG = {
   FOG_COLOR: new Color(0, 0, 0),
   FOG_FACTOR: 1,
   LIGHTING_FAKE_CONTRAST: true,
-  RENDER_DEBUG_WALL_SIDES_TEXTURES: false
+  NPC_SPAWN_CHANGE: 0.01
 };
 
 export default CONFIG;
