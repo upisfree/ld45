@@ -69,7 +69,7 @@ class NPC extends Sprite {
     }
   }
 
-  destroy() {
+  destroy(onRestart = false) {
     this.destroyed = true;
     this.bitmap = ASSETS.TEXTURES['explosion'].bitmap;
     this.frame = 0;
@@ -78,18 +78,22 @@ class NPC extends Sprite {
 
     let r = Math.floor(Math.random() * (7 - 1 + 1) + 1);
 
-    let s = (<any>window).sound.play('scream' + r);
-    (<any>window).sound.volume(0.5, s);
-    (<any>window).sound.fade(0.85, 1, (<any>window).sound.duration(s) * 0.15, s);
+    if (!onRestart || (onRestart && Math.random() < 0.2)) {
+      let s = (<any>window).sound.play('scream' + r);
+      (<any>window).sound.volume(0.5, s);
+      (<any>window).sound.fade(0.85, 1, (<any>window).sound.duration(s) * 0.15, s);
+    }
 
-    (<any>window).kills++;
-    document.querySelector('#count').textContent = (<any>window).kills;
+    if (!onRestart) {
+      (<any>window).kills++;
+      document.querySelector('#count').textContent = (<any>window).kills;
+    }
   }
 
   onCollision(trigger: Sprite | Player): void {
     this.collisionWith = trigger;
 
-    if (!this.corpse) {
+    if (!this.corpse && !this.destroyed) {
       this.level.player.health -= 2;      
     }
   }

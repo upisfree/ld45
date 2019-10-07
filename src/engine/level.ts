@@ -93,8 +93,6 @@ class Level {
 
       this.walls[i] = r;
     }
-
-    console.log(this.walls);
   }
 
   public parseFromBitmap(bitmap: Bitmap): void {

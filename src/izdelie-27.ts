@@ -17,7 +17,7 @@ import gl from './engine/render/gl';
 
 load(init);
 
-let music;
+let music, camera, player, level;
 
 function spawnRandomNPC(level) {
   let count = 3;
@@ -62,15 +62,36 @@ function spawnRandomNPC(level) {
   }
 }
 
+function restart() {
+  level.randomize();
+
+  player.position.x = level.size / 2;
+  player.position.y = level.size / 2;
+
+  camera.position = player.position;
+  camera.rotation = player.rotation;
+
+  (<any>window).sound.seek(0, music);
+
+  level.npcs.forEach(n => { n.destroy(true); });
+  level.npcs.length = Math.floor(Math.random() * level.sprites.length);
+  level.sprites.length = 0;
+
+  setTimeout(() => {
+    (<any>window).kills = 0;
+    document.querySelector('#count').textContent = (<any>window).kills;    
+  }, 2500);
+}
+
 function init() {
   ASSETS.MAP_BITMAP = ASSETS.TEXTURES['map'].bitmap;
 
-  let level = new Level(0, null, [], ASSETS.TEXTURES['skybox'].bitmap, false);
+  level = new Level(0, null, [], ASSETS.TEXTURES['skybox'].bitmap, false);
   level.parseFromBitmap(ASSETS.MAP_BITMAP);
   level.randomize();
 
-  let camera = new Camera(level);
-  let player = new Player(camera, level, new Vector2(level.size / 2, level.size / 2), Math.PI / -2);
+  camera = new Camera(level);
+  player = new Player(camera, level, new Vector2(level.size / 2, level.size / 2), Math.PI / -2);
   // let minimap = new Minimap(level, camera, new Vector2(1, 1));
 
   camera.position = player.position;
@@ -86,8 +107,6 @@ function init() {
   initMouse();
   // addMouseListener(player.onMouseTick.bind(player));
 
-  console.log
-
   tick(() => {
     camera.render();
     // minimap.render();
@@ -101,8 +120,6 @@ function init() {
     camera.fov += Math.cos(Date.now() / 400) / 175;
 
     if (Math.random() < CONFIG.NPC_SPAWN_CHANGE) {
-      console.log('npc');
-
       spawnRandomNPC(level);
     }
   });
@@ -114,11 +131,18 @@ function init() {
   window.addEventListener('resize', resize.bind(this, canvas, camera));
 
   window.addEventListener('keyup', (event) => {
-    if (event.keyCode === 32) {
-      player.attack();      
+    switch (event.keyCode) {
+      case 32: // space
+        player.attack();
+
+        break;
+      case 82: // R
+        restart();
+
+        break;
     }
   });
-  // window.addEventListener('click', player.onMouseClick.bind(player));
+
   resize(canvas, camera);
 };
 
@@ -188,3 +212,5 @@ function load(callback) {
 });
 
 music = (<any>window).sound.play('music');
+
+(<any>window).restart = restart;

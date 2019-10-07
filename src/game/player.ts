@@ -46,7 +46,7 @@ class Player {
     }
 
     if (this.health < 0) {
-      location.reload();
+      (<any>window).restart();
     }
   }
 
