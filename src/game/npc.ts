@@ -94,7 +94,7 @@ class NPC extends Sprite {
     this.collisionWith = trigger;
 
     if (!this.corpse && !this.destroyed) {
-      this.level.player.health -= 2;      
+      this.level.player.health -= 1;      
     }
   }
 }

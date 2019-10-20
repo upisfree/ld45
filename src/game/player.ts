@@ -19,7 +19,7 @@ class Player {
   rotateSpeed: number = Math.PI / 64;
   noddlingStabilizationSpeed: number = 20;
   noddlingFrequency: number = 120;
-  noddlingForce: number = 5;
+  noddlingForce: number = 3;
 
   isMoving: boolean = false;
 
@@ -46,7 +46,7 @@ class Player {
     }
 
     if (this.health < 0) {
-      (<any>window).restart();
+      // (<any>window).restart();
     }
   }
 
@@ -148,7 +148,11 @@ class Player {
   }
 
   attack(): void {
-    this.camera.gunOffset = 200;
+    if ((<any>window).isMobile) {
+      this.camera.gunOffset = 150; // mobile
+    } else {
+      this.camera.gunOffset = 200; // desktop
+    }
 
     for (let i = 0; i < this.level.npcs.length; i++) {
       let n = this.level.npcs[i];

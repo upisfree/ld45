@@ -30,6 +30,8 @@ canvas {
 }
 
 #count {
+  opacity: 0;
+
   position: absolute;
   font-size: 72pt;
   margin: 0;
@@ -74,6 +76,22 @@ canvas {
 
 #title, #manual {
   display: none;
+}
+
+@media only screen and (max-device-width: 740px) {
+  #author {
+    font-size: 18pt;
+    white-space: nowrap;
+  }
+
+  #title {
+    font-size: 48pt;
+  }
+
+  #manual {
+    font-size: 14pt;
+    margin: 12%;
+  }
 }
     </style>
   </head>

@@ -52,13 +52,6 @@ class Camera {
     this.fov = fov;
 
     this.resize();
-
-    if (CONFIG.RENDER_DEBUG_WALL_SIDES_TEXTURES) {
-      this.nBitmap = ASSETS.TEXTURES['n'].bitmap;
-      this.eBitmap = ASSETS.TEXTURES['e'].bitmap;
-      this.sBitmap = ASSETS.TEXTURES['s'].bitmap;
-      this.wBitmap = ASSETS.TEXTURES['w'].bitmap;
-    }
   }
 
   public render(): void {
@@ -79,7 +72,12 @@ class Camera {
   private renderGun(): void {
     let bitmap = ASSETS.TEXTURES['gun'].bitmap;
 
-    this.gunOffset -= 20;
+    if ((<any>window).isMobile) {
+      this.gunOffset -= 15;
+    } else {
+      this.gunOffset -= 20;      
+    }
+
 
     if (this.gunOffset < 0) {
       this.gunOffset = 0;
@@ -91,6 +89,13 @@ class Camera {
     let h = w;
     let x = (this.ww + 50) - w + this.heightOffset / 2.5 - this.gunOffset + (Math.cos(now / 500) * 15);
     let y = (this.wh + 50) - h + this.heightOffset * 1 - this.gunOffset + (Math.cos(now / 500) * 20);
+
+    if ((<any>window).isMobile) {
+      h = this.wh / 4;
+      w = h;
+      x = (this.ww + 10) - w + this.heightOffset / 2.5 - this.gunOffset / 2 + (Math.cos(now / 500) * 15);
+      y = (this.wh - 20) - h + this.heightOffset * 1 - this.gunOffset / 1.25 + (Math.cos(now / 500) * 20);      
+    }
 
     gl.drawImage(
       bitmap,
@@ -108,7 +113,7 @@ class Camera {
     gl.drawRect(
       new Vector2(0, 0),
       new Vector2(this.ww, this.wh),
-      new Color(160 * Math.random(), 0, 0, a * 4)
+      new Color(160 * Math.random(), 0, 0, a * 1)
     );
   }
 
