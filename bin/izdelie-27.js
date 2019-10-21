@@ -1,1 +1,1766 @@
-!function(i){var n={};function s(t){if(n[t])return n[t].exports;var e=n[t]={i:t,l:!1,exports:{}};return i[t].call(e.exports,e,e.exports,s),e.l=!0,e.exports}s.m=i,s.c=n,s.d=function(t,e,i){s.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:i})},s.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},s.t=function(e,t){if(1&t&&(e=s(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var i=Object.create(null);if(s.r(i),Object.defineProperty(i,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var n in e)s.d(i,n,function(t){return e[t]}.bind(null,n));return i},s.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return s.d(e,"a",e),e},s.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},s.p="",s(s.s=0)}({"./src/assets.ts":function(t,e,i){"use strict";function n(t){return{bitmap:null,wallType:t}}Object.defineProperty(e,"__esModule",{value:!0});var s={FOLDER_URL:"./assets/",MAP_BITMAP:void 0,TEXTURES:{map:n(),"wall-1":n(1),"wall-2":n(2),"wall-3":n(3),"wall-4":n(4),"wall-5":n(5),"wall-6":n(6),skybox:n(),npc:n(),gun:n(),explosion:n(),corpse:n(),"daemon-1":n(),"daemon-2":n(),"daemon-3":n(),"daemon-4":n()},SOUNDS:{}};e.default=s},"./src/config.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n={DEBUG:!0,FOG:!0,FOG_COLOR:new(i("./src/engine/math/color.ts").default)(0,0,0),FOG_FACTOR:1,LIGHTING_FAKE_CONTRAST:!0,NPC_SPAWN_CHANGE:.01};e.default=n},"./src/engine/level.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=i("./src/assets.ts"),d=i("./src/engine/math/color.ts"),u=i("./src/game/walls-data.ts"),s={};e.WALL_TEXTURE=s,Object.values(n.default.TEXTURES).forEach(function(t){t.wallType&&(s[t.wallType]=t)});var o=(a.isWallTypeVoidOrAir=function(t){return-1===t||0===t},a.prototype.update=function(){this.sprites.forEach(function(t){t.collisionWith=null,t.detectCollisions()}),this.npcs.forEach(function(t){return t.update()})},a.prototype.getWallType=function(t){var e=Math.round(t.x),i=Math.round(t.y);if(e<0||e>this.size-1||i<0||i>this.size-1)return-1;var n=this.walls[i*this.size+e];return null==n?-1:n},a.prototype.isCollision=function(t){return!a.isWallTypeVoidOrAir(this.getWallType(t))},a.prototype.isNotCollision=function(t){return a.isWallTypeVoidOrAir(this.getWallType(t))},a.prototype.randomize=function(){for(var t=0;t<this.size*this.size;t++){var e=Math.floor(7*Math.random()+0),i=this.size/2;(.1<Math.random()||t===i*this.size+i)&&(e=0),this.walls[t]=e}},a.prototype.parseFromBitmap=function(r){for(var l=[],h=0;h<r.height;h++)for(var t=function(t){var e=h*(4*r.width)+4*t,i=r.imageData[e],n=r.imageData[1+e],s=r.imageData[2+e],o=r.imageData[3+e],a=new d.default(i,n,s,o);u.WALLS_DATA.forEach(function(t){t.color.equals(a)&&l.push(t.code)})},e=0;e<r.width;e++)t(e);this.size=r.width,this.walls=new Uint8Array(l)},a);function a(t,e,i,n,s){void 0===e&&(e=new Uint8Array(t*t)),void 0===i&&(i=[]),void 0===s&&(s=!1),this.size=t,this.walls=e,this.sprites=[],this.npcs=i,this.skybox=n,s&&this.randomize()}e.default=o},"./src/engine/math/angle.ts":function(t,e,i){"use strict";var n,o;Object.defineProperty(e,"__esModule",{value:!0}),(o=n=n||{}).PI_2=2*Math.PI,o.UP=Math.PI/2,o.DOWN=3*Math.PI/2,o.LEFT=Math.PI,o.RIGHT=0,o.NORTH=o.UP,o.SOUTH=o.DOWN,o.WEST=o.LEFT,o.EAST=o.RIGHT,o.rad2deg=function(t){return t*(180/Math.PI)},o.deg2rad=function(t){return t*(Math.PI/180)},o.normalize=function(t){return t-o.PI_2*Math.floor(t/o.PI_2)},o.difference=function(t,e){var i=Math.abs(t-e)%o.PI_2;return i>Math.PI?o.PI_2-i:i},o.closestCardinal=function(t){var e=o.difference(t,o.LEFT),i=o.difference(t,o.RIGHT),n=o.difference(t,o.UP),s=o.difference(t,o.DOWN);return e<=i&&e<=n&&e<=s?o.LEFT:i<=n&&i<=s?o.RIGHT:n<=s?o.UP:o.DOWN},o.closestHorizontalCardinal=function(t){return o.difference(t,o.LEFT)<o.difference(t,o.RIGHT)?o.LEFT:o.RIGHT},o.closestVerticalCardinal=function(t){return o.difference(t,o.UP)<o.difference(t,o.DOWN)?o.UP:o.DOWN},o.betweenTwoPoints=function(t,e){return o.normalize(Math.atan2(e.y-t.y,e.x-t.x))},e.default=n},"./src/engine/math/color.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=(s.prototype.equals=function(t){return this.r===t.r&&this.g===t.g&&this.b===t.b&&this.a===t.a},s.prototype.getRGBAString=function(){return"rgba("+this.r+", "+this.g+", "+this.b+", "+this.a/255+")"},s);function s(t,e,i,n){void 0===n&&(n=255),this.r=t,this.g=e,this.b=i,this.a=n}e.default=n},"./src/engine/math/vector2.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=(Object.defineProperty(s.prototype,"width",{get:function(){return this.x},set:function(t){this.x=t},enumerable:!0,configurable:!0}),Object.defineProperty(s.prototype,"height",{get:function(){return this.y},set:function(t){this.y=t},enumerable:!0,configurable:!0}),s.distance=function(t,e){return Math.sqrt(Math.pow(t.x-e.x,2)+Math.pow(t.y-e.y,2))},s.prototype.add=function(t){return this.x+=t.x,this.y+=t.y,this},s.prototype.sub=function(t){return this.x-=t.x,this.y-=t.y,this},s.prototype.mult=function(t){return this.x*=t.x,this.y*=t.y,this},s.prototype.div=function(t){return this.x/=t.x,this.y/=t.y,this},s.prototype.neg=function(){return this.x*=-1,this.y*=-1,this},s.prototype.copy=function(){return new s(this.x,this.y)},s);function s(t,e){this.x=t,this.y=e}e.default=n},"./src/engine/platform/canvas.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.canvas=document.querySelector("#render-output"),e.context=e.canvas.getContext("2d")},"./src/engine/platform/keyboard.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n={keyCodes:[],alt:!1,ctrl:!1,meta:!1,shift:!1};e.default=n;var s=[];function o(t){n.keyCodes.includes(t.keyCode)||n.keyCodes.push(t.keyCode),n.alt=t.altKey,n.ctrl=t.ctrlKey,n.meta=t.metaKey,n.shift=t.shiftKey}function a(t){n.keyCodes.splice(n.keyCodes.indexOf(t.keyCode),1),n.alt=t.altKey,n.ctrl=t.ctrlKey,n.meta=t.metaKey,n.shift=t.shiftKey}e.keyboardListeners=s,e.initKeyboard=function(){window.addEventListener("keydown",o),window.addEventListener("keyup",a)},e.addKeyboardListener=function(t){s.push(t)}},"./src/engine/platform/mouse.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n={movementX:0,movementY:0};e.default=n;var s=[];function o(t){n.movementX=t.movementX,n.movementY=t.movementY}e.mouseListeners=s,e.initMouse=function(){window.addEventListener("mousemove",o)},e.addMouseListener=function(t){s.push(t)},e.clearMouse=function(){n.movementX=0,n.movementY=0}},"./src/engine/platform/resize.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=i("./src/engine/platform/canvas.ts");e.default=function(t,e){t.width=window.innerWidth,t.height=window.innerHeight,n.context.imageSmoothingEnabled=!1,e.resize()}},"./src/engine/render/bitmap.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=(s.prototype.getImageData=function(){var t=document.createElement("canvas"),e=t.getContext("2d");t.width=this.width,t.height=this.height,e.drawImage(this.image,0,0);var i=e.getImageData(0,0,this.width,this.height);return t.remove(),i.data},s);function s(t){this.image=t,this.width=this.image.naturalWidth,this.height=this.image.naturalHeight,this.imageData=this.getImageData()}e.default=n},"./src/engine/render/camera.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var f=i("./src/config.ts"),a=i("./src/assets.ts"),p=i("./src/engine/math/vector2.ts"),c=i("./src/engine/math/angle.ts"),m=i("./src/engine/math/color.ts"),y=i("./src/engine/render/gl.ts"),w=i("./src/engine/level.ts"),n=i("./src/engine/platform/canvas.ts"),s=(o.prototype.render=function(){this.castRays(),this.zBuffer=new Float32Array(this.ww),this.renderGround(),this.renderSkybox(),this.renderWalls(),this.renderNPCs(),this.renderGun(),this.postProcess()},o.prototype.renderGun=function(){var t=a.default.TEXTURES.gun.bitmap;this.gunOffset-=20,this.gunOffset<0&&(this.gunOffset=0);var e=Date.now(),i=this.ww/3.5,n=i,s=this.ww+50-i+this.heightOffset/2.5-this.gunOffset+15*Math.cos(e/500),o=this.wh+50-n+1*this.heightOffset-this.gunOffset+20*Math.cos(e/500);y.default.drawImage(t,new p.default(0,0),new p.default(t.width,t.height),new p.default(s,o),new p.default(i,n),Math.PI/(16-5*Math.cos(e/500)))},o.prototype.postProcess=function(){var t=255-this.level.player.health/100*255;y.default.drawRect(new p.default(0,0),new p.default(this.ww,this.wh),new m.default(160*Math.random(),0,0,4*t))},o.prototype.resize=function(){this.ww=n.canvas.width,this.wh=n.canvas.height,this.rayWidth=this.ww/this.rays.length,this.zBuffer=new Float32Array(this.ww)},o.prototype.castRays=function(){this.rays=[];for(var t=0;t<this.raysCount;t++){for(var e=-1,i=void 0,n=-1,s=c.default.normalize(this.rotation-this.fov/2+this.fov*t/this.raysCount),o=new p.default(this.position.x,this.position.y),a=new p.default(o.x,o.y),r=0;r<this.rayDistance;r+=this.rayStep){if(a.x=o.x+r*Math.cos(s),n=this.level.getWallType(a),!w.default.isWallTypeVoidOrAir(n)){e=r,i=o.x<a.x?2:3;break}if(a.y=o.y+r*Math.sin(s),n=this.level.getWallType(a),!w.default.isWallTypeVoidOrAir(n)){e=r,i=o.y<a.y?0:1;break}}-1!==e&&(e*=Math.cos(s-this.rotation)),this.rays.push({a:o,b:a,distance:e,rotation:s,side:i,type:n,index:t})}},o.prototype.fillWallStripeZBuffer=function(t){for(var e=Math.ceil(this.rayWidth*t.index),i=this.rayWidth*(t.index+1),n=e;n<i;n++)this.zBuffer[n]=t.distance},o.prototype.renderWalls=function(){for(var t=0;t<this.rays.length;t++)this.renderWallStripe(this.rays[t])},o.prototype.renderWallStripe=function(t){if(this.fillWallStripeZBuffer(t),-1!==t.distance){var e,i=w.WALL_TEXTURE[t.type].bitmap,n=(t.rotation,this.wh/t.distance),s=t.distance/this.rayDistance,o=this.wh/2-n/2+this.heightOffset,a=t.b.x%1,r=t.b.y%1;switch(t.side){case 0:e=1-a;break;case 3:e=1-r;break;case 1:e=a;break;case 2:e=r}e=.5<=e?e-.5:e+.5;var l=Math.floor(i.width*e);y.default.drawImage(i,new p.default(l,0),new p.default(1,i.height),new p.default(this.rayWidth*t.index,o),new p.default(this.rayWidth,n));var h=Math.floor(this.rayWidth*t.index),d=this.rayWidth*(t.index+1),u=Math.floor(d-h);if(f.default.LIGHTING_FAKE_CONTRAST&&(2===t.side||3===t.side)){var c=new m.default(0,0,0,128);y.default.drawRect(new p.default(h,o),new p.default(u,n),c)}f.default.FOG&&((c=f.default.FOG_COLOR).a=255*s*f.default.FOG_FACTOR,y.default.drawRect(new p.default(h,o),new p.default(u,n),c))}},o.prototype.renderNPC=function(t){var e=c.default.betweenTwoPoints(this.position,t.position),i=p.default.distance(this.position,t.position);if(!(i>this.rayDistance)){i<this.minSpriteDistance&&(i=this.minSpriteDistance);var n=this.wh/i,s=this.wh/i,o=e-this.rotation;1<o?o-=c.default.PI_2:o<-1&&(o+=c.default.PI_2);for(var a=o*this.ww/this.fov+this.ww/2-n/2,r=a+n,l=this.wh/2-s/2+this.heightOffset,h=a;h<r;h+=this.rayWidth){var d=this.zBuffer[Math.ceil(h)];if(!(null!=d&&d<i&&-1!==d)){var u=t.frame*t.frameWidth+Math.floor((h-a)*t.frameWidth/n);y.default.drawImage(t.bitmap,new p.default(u,0),new p.default(1,t.bitmap.height),new p.default(h,l),new p.default(this.rayWidth,s))}}}},o.prototype.renderNPCs=function(){this.sortSprites();for(var t=0;t<this.level.npcs.length;t++)this.renderNPC(this.level.npcs[t])},o.prototype.sortSprites=function(){var i=this;this.level.sprites.sort(function(t,e){return p.default.distance(i.position,e.position)-p.default.distance(i.position,t.position)})},o.prototype.renderGround=function(){y.default.drawRect(new p.default(0,0),new p.default(this.ww,this.wh),new m.default(0,0,0))},o.prototype.renderSkybox=function(){var t=this.level.skybox,e=t.width*(this.wh/t.height)*2,i=this.wh/2+this.heightOffset,n=this.rotation/Math.PI/2*-e;y.default.drawImage(t,new p.default(0,0),new p.default(t.width,t.height),new p.default(n,0),new p.default(e,i)),n<e-this.ww&&y.default.drawImage(t,new p.default(0,0),new p.default(t.width,t.height),new p.default(n+e,0),new p.default(e,i)),y.default.drawRect(new p.default(0,0),new p.default(this.ww,i),new m.default(0,0,0,256*Math.random()))},o.prototype.renderZBuffer=function(){for(var t=0;t<this.zBuffer.length;t++)if(-1!==this.zBuffer[t]){var e=this.zBuffer[t]/this.rayDistance,i=255*e;y.default.drawLine(new p.default(t,this.wh/2+this.heightOffset-15/e),new p.default(t,this.wh/2+this.heightOffset+15/e),new m.default(i,i,i))}},o);function o(t,e){void 0===e&&(e=Math.PI/2),this.position=new p.default(0,0),this.heightOffset=0,this.rotation=0,this.minSpriteDistance=.01,this.rays=[],this.rayDistance=15,this.rayStep=.01,this.raysCount=128,this.gunOffset=0,this.level=t,this.fov=e,this.resize(),f.default.RENDER_DEBUG_WALL_SIDES_TEXTURES&&(this.nBitmap=a.default.TEXTURES.n.bitmap,this.eBitmap=a.default.TEXTURES.e.bitmap,this.sBitmap=a.default.TEXTURES.s.bitmap,this.wBitmap=a.default.TEXTURES.w.bitmap)}e.default=s},"./src/engine/render/gl.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n,s,l=i("./src/engine/platform/canvas.ts"),a=i("./src/engine/math/color.ts");function r(t,e,i,n){void 0===n&&(n=0),l.context.save(),l.context.beginPath();var s=t.x+e.width/2,o=t.y+e.height/2;l.context.translate(s,o),l.context.rotate(n),i instanceof a.default&&(i=i.getRGBAString()),l.context.fillStyle=i,l.context.fillRect(-e.width/2,-e.height/2,e.width,e.height),l.context.closePath(),l.context.restore()}(s=n=n||{}).drawRect=r,s.drawImage=function(t,e,i,n,s,o){void 0===o&&(o=0),l.context.save();var a=n.x+s.width/2,r=n.y+s.height/2;l.context.translate(a,r),l.context.rotate(o),l.context.translate(-a,-r),l.context.drawImage(t.image,e.x,e.y,i.width,i.height,n.x,n.y,s.width,s.height),l.context.restore()},s.drawGradient=function(t,e,i){for(var n=[],s=3;s<arguments.length;s++)n[s-3]=arguments[s];for(var o=l.context.createLinearGradient(0,0,0,e.height),a=0;a<n.length;a++)o.addColorStop(a,n[a].getRGBAString());r(t,e,o,i)},s.drawLine=function(t,e,i){l.context.save(),l.context.beginPath(),l.context.strokeStyle=i.getRGBAString(),l.context.moveTo(t.x,t.y),l.context.lineTo(e.x,e.y),l.context.stroke(),l.context.closePath(),l.context.restore()},s.clear=function(){l.context.clearRect(0,0,l.canvas.width,l.canvas.height)},e.default=n},"./src/engine/render/sprite.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=i("./src/engine/math/vector2.ts"),s=(o.prototype.detectCollisions=function(){n.default.distance(this.position,this.level.player.position)<=this.collisionTriggerDistance&&this.onCollision(this.level.player)},o.prototype.onCollision=function(t){this.collisionWith=t},o);function o(t,e,i){this.collisionTriggerDistance=1,this.bitmap=t,this.position=e,this.level=i,this.level.sprites.push(this)}e.default=s},"./src/engine/tick.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=i("./src/engine/render/gl.ts"),s=i("./src/engine/platform/keyboard.ts"),o=i("./src/engine/platform/mouse.ts");e.default=function t(e){s.keyboardListeners.forEach(function(t){return t()}),o.mouseListeners.forEach(function(t){return t()}),o.clearMouse(),n.default.clear(),e(),requestAnimationFrame(t.bind(this,e))}},"./src/game/npc.ts":function(t,e,i){"use strict";var n,s=this&&this.__extends||(n=function(t,e){return(n=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,e){t.__proto__=e}||function(t,e){for(var i in e)e.hasOwnProperty(i)&&(t[i]=e[i])})(t,e)},function(t,e){function i(){this.constructor=t}n(t,e),t.prototype=null===e?Object.create(e):(i.prototype=e.prototype,new i)});Object.defineProperty(e,"__esModule",{value:!0});var o=i("./src/assets.ts"),a=i("./src/engine/math/vector2.ts"),r=i("./src/engine/render/sprite.ts"),l=i("./src/engine/level.ts");window.kills=0;var h,d=(h=r.default,s(u,h),u.prototype.update=function(){var t=this.position.copy(),e=new a.default(this.moveSpeed,this.moveSpeed),i=t.sub(this.level.player.position).mult(e),n=new a.default(this.position.x-i.x,this.position.y-i.y),s=this.level.getWallType(n);this.corpse||(l.default.isWallTypeVoidOrAir(s)?this.position.sub(i):this.position.add(i)),.65<Math.random()&&this.frame++,this.frame>=this.framesCount&&(this.destroyed?(this.bitmap=o.default.TEXTURES.corpse.bitmap,this.frame=0,this.framesCount=8,this.frameWidth=51,this.corpse=!0):this.frame=0)},u.prototype.destroy=function(t){void 0===t&&(t=!1),this.destroyed=!0,this.bitmap=o.default.TEXTURES.explosion.bitmap,this.frame=0,this.framesCount=6,this.frameWidth=32;var e=Math.floor(7*Math.random()+1);if(!t||t&&Math.random()<.05){var i=window.sound.play("scream"+e);window.sound.volume(.5,i),window.sound.fade(.85,1,.15*window.sound.duration(i),i)}t||(window.kills++,document.querySelector("#count").textContent=window.kills)},u.prototype.onCollision=function(t){this.collisionWith=t,this.corpse||this.destroyed||(this.level.player.health-=2)},u);function u(t,e,i,n,s){var o=h.call(this,t,e,i)||this;return o.frame=0,o.framesCount=0,o.frameWidth=0,o.destroyed=!1,o.corpse=!1,o.moveSpeed=.0085,o.framesCount=n,o.frameWidth=s,o.level.npcs.push(o),o}e.default=d},"./src/game/player.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=i("./src/engine/math/vector2.ts"),l=i("./src/engine/math/angle.ts"),n=i("./src/engine/platform/keyboard.ts"),s=i("./src/engine/platform/mouse.ts"),o=(a.prototype.update=function(){this.nullifyHeightOffset(),this.isMoving=!1,this.health+=1,100<this.health&&(this.health=100),this.health<0&&window.restart()},a.prototype.move=function(t){var e,i,n,s,o=this.position,a=performance.now();switch(this.isMoving=!0,t){case 0:e=this.moveSpeed*Math.cos(this.rotation),i=this.moveSpeed*Math.sin(this.rotation),n=this.level.isNotCollision(new r.default(o.x+e,o.y)),s=this.level.isNotCollision(new r.default(o.x,o.y+i)),n&&(this.position.x+=e),s&&(this.position.y+=i),n&&s&&(this.camera.heightOffset-=Math.cos(a/this.noddlingFrequency)*this.noddlingForce);break;case 2:this.rotation-=this.rotateSpeed;break;case 1:e=this.moveSpeed*Math.cos(this.rotation),i=this.moveSpeed*Math.sin(this.rotation),n=this.level.isNotCollision(new r.default(o.x-e,o.y)),s=this.level.isNotCollision(new r.default(o.x,o.y-i)),n&&(this.position.x-=e),s&&(this.position.y-=i),n&&s&&(this.camera.heightOffset+=Math.cos(a/this.noddlingFrequency)*this.noddlingForce);break;case 3:this.rotation+=this.rotateSpeed}this.rotation=l.default.normalize(this.rotation),this.camera.position=this.position,this.camera.rotation=this.rotation},a.prototype.onKeyboardTick=function(){(n.default.keyCodes.includes(38)||n.default.keyCodes.includes(87))&&this.move(0),(n.default.keyCodes.includes(37)||n.default.keyCodes.includes(65))&&this.move(2),(n.default.keyCodes.includes(40)||n.default.keyCodes.includes(83))&&this.move(1),(n.default.keyCodes.includes(39)||n.default.keyCodes.includes(68))&&this.move(3)},a.prototype.onMouseTick=function(){0<s.default.movementX?this.move(3):s.default.movementX<0&&this.move(2)},a.prototype.attack=function(){this.camera.gunOffset=200;for(var t=0;t<this.level.npcs.length;t++){var e=this.level.npcs[t];if(r.default.distance(this.position,e.position)<1&&!e.corpse&&!e.destroyed){e.destroy();break}}},a.prototype.nullifyHeightOffset=function(){this.isMoving||(this.camera.heightOffset=Math.trunc(this.camera.heightOffset),this.camera.heightOffset>this.noddlingStabilizationSpeed?this.camera.heightOffset-=this.noddlingStabilizationSpeed:this.camera.heightOffset<-this.noddlingStabilizationSpeed&&(this.camera.heightOffset+=this.noddlingStabilizationSpeed))},a);function a(t,e,i,n){void 0===i&&(i=new r.default(0,0)),void 0===n&&(n=0),this.rotation=0,this.health=100,this.moveSpeed=.1,this.rotateSpeed=Math.PI/64,this.noddlingStabilizationSpeed=20,this.noddlingFrequency=120,this.noddlingForce=5,this.isMoving=!1,this.camera=t,this.level=e,this.position=i,this.rotation=n}e.default=o},"./src/game/walls-data.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=i("./src/engine/math/color.ts"),s=[{name:"air",code:0,color:new n.default(0,0,0,0)},{name:"wall-1",code:1,color:new n.default(0,0,0,255)},{name:"wall-2",code:2,color:new n.default(255,0,0,255)},{name:"wall-3",code:3,color:new n.default(255,0,0,255)},{name:"wall-4",code:4,color:new n.default(255,0,0,255)},{name:"wall-5",code:5,color:new n.default(255,0,0,255)},{name:"wall-6",code:6,color:new n.default(255,0,0,255)}];e.WALLS_DATA=s},"./src/izdelie-27.ts":function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n,o,s,a,r,l,h=i("./src/config.ts"),d=i("./src/assets.ts"),u=i("./src/engine/tick.ts"),c=i("./src/engine/platform/resize.ts"),f=i("./src/engine/platform/canvas.ts"),p=i("./src/engine/platform/keyboard.ts"),m=i("./src/engine/platform/mouse.ts"),y=i("./src/engine/math/vector2.ts"),w=i("./src/engine/render/camera.ts"),v=i("./src/engine/level.ts"),g=i("./src/game/player.ts"),b=i("./src/engine/render/bitmap.ts"),M=i("./src/game/npc.ts");function T(){l.randomize(),r.position.x=l.size/2,r.position.y=l.size/2,a.position=r.position,a.rotation=r.rotation,window.sound.seek(0,s),l.npcs.forEach(function(t){t.destroy(!0)}),l.npcs.length=Math.floor(Math.random()*l.sprites.length),l.sprites.length=0,setTimeout(function(){window.kills=0,document.querySelector("#count").textContent=window.kills},2500)}n=function(){d.default.MAP_BITMAP=d.default.TEXTURES.map.bitmap,(l=new v.default(0,null,[],d.default.TEXTURES.skybox.bitmap,!1)).parseFromBitmap(d.default.MAP_BITMAP),l.randomize(),a=new w.default(l),r=new g.default(a,l,new y.default(l.size/2,l.size/2),Math.PI/-2),a.position=r.position,a.rotation=r.rotation,l.player=r,p.initKeyboard(),p.addKeyboardListener(r.onKeyboardTick.bind(r)),m.initMouse(),u.default(function(){a.render(),r.update(),l.update();var t=1+50*(1-r.health/100);window.sound.volume(t,s),a.fov+=Math.cos(Date.now()/400)/175,Math.random()<h.default.NPC_SPAWN_CHANGE&&function(t){switch(Math.floor(4*Math.random()+0)){case 0:return new M.default(d.default.TEXTURES["daemon-1"].bitmap,new y.default(Math.ceil(t.size*Math.random()),Math.ceil(t.size*Math.random())),t,1,64);case 1:return new M.default(d.default.TEXTURES["daemon-2"].bitmap,new y.default(Math.ceil(t.size*Math.random()),Math.ceil(t.size*Math.random())),t,1,64);case 2:return new M.default(d.default.TEXTURES["daemon-3"].bitmap,new y.default(Math.ceil(t.size*Math.random()),Math.ceil(t.size*Math.random())),t,10,200);case 3:new M.default(d.default.TEXTURES["daemon-4"].bitmap,new y.default(Math.ceil(t.size*Math.random()),Math.ceil(t.size*Math.random())),t,4,48)}}(l)}),setInterval(function(){h.default.NPC_SPAWN_CHANGE*=1.25},15e3),window.addEventListener("resize",c.default.bind(this,f.canvas,a)),window.addEventListener("keyup",function(t){switch(t.keyCode){case 32:r.attack();break;case 82:T()}}),c.default(f.canvas,a)},o=[],Object.keys(d.default.TEXTURES).forEach(function(s){o.push(new Promise(function(t,e){var i=""+d.default.FOLDER_URL+s+".png",n=new Image;n.addEventListener("load",function(){d.default.TEXTURES[s].bitmap=new b.default(n),t(n)}),n.addEventListener("error",function(){e(new Error("Не получилось загрузить картинку: "+i))}),n.src=""+d.default.FOLDER_URL+s+".png"}))}),Promise.all(o).then(n),window.sound=new window.Howl({src:["./assets/sound.mp3"],sprite:{scream1:[0,760],scream2:[1160,560],scream3:[2240,2800],scream4:[5520,2320],scream5:[8440,3e3],scream6:[12040,3920],scream7:[16640,1400],music:[19190,739880,!0]},volume:1}),s=window.sound.play("music"),window.restart=T,setTimeout(function(){document.querySelector("#author").style.display="none",document.querySelector("#title").style.display="block"},4e3),setTimeout(function(){document.querySelector("#title").style.display="none",document.querySelector("#manual").style.display="block"},8e3),setTimeout(function(){document.querySelector("#manual").style.display="none",document.querySelector("#text").style.display="none"},17e3)},0:function(t,e,i){t.exports=i("./src/izdelie-27.ts")}});
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./src/assets.ts":
+/*!***********************!*\
+  !*** ./src/assets.ts ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function getEmptyTextureObject(wallType) {
+    return {
+        bitmap: null,
+        wallType: wallType
+    };
+}
+var ASSETS = {
+    FOLDER_URL: './assets/',
+    MAP_BITMAP: undefined,
+    TEXTURES: {
+        'map': getEmptyTextureObject(),
+        'wall-1': getEmptyTextureObject(1 /* ONE */),
+        'wall-2': getEmptyTextureObject(2 /* TWO */),
+        'wall-3': getEmptyTextureObject(3 /* THREE */),
+        'wall-4': getEmptyTextureObject(4 /* FOUR */),
+        'wall-5': getEmptyTextureObject(5 /* FIVE */),
+        'wall-6': getEmptyTextureObject(6 /* SIX */),
+        'skybox': getEmptyTextureObject(),
+        'npc': getEmptyTextureObject(),
+        'gun': getEmptyTextureObject(),
+        'explosion': getEmptyTextureObject(),
+        'corpse': getEmptyTextureObject(),
+        'daemon-1': getEmptyTextureObject(),
+        'daemon-2': getEmptyTextureObject(),
+        'daemon-3': getEmptyTextureObject(),
+        'daemon-4': getEmptyTextureObject(),
+    },
+    SOUNDS: {}
+};
+exports.default = ASSETS;
+
+
+/***/ }),
+
+/***/ "./src/config.ts":
+/*!***********************!*\
+  !*** ./src/config.ts ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var color_1 = __webpack_require__(/*! ./engine/math/color */ "./src/engine/math/color.ts");
+var CONFIG = {
+    DEBUG: true,
+    FOG: true,
+    FOG_COLOR: new color_1.default(0, 0, 0),
+    FOG_FACTOR: 1,
+    LIGHTING_FAKE_CONTRAST: true,
+    NPC_SPAWN_CHANGE: 0.01
+};
+exports.default = CONFIG;
+
+
+/***/ }),
+
+/***/ "./src/engine/level.ts":
+/*!*****************************!*\
+  !*** ./src/engine/level.ts ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var assets_1 = __webpack_require__(/*! ../assets */ "./src/assets.ts");
+var color_1 = __webpack_require__(/*! ./math/color */ "./src/engine/math/color.ts");
+var walls_data_1 = __webpack_require__(/*! ../game/walls-data */ "./src/game/walls-data.ts");
+var WALL_TEXTURE = {};
+exports.WALL_TEXTURE = WALL_TEXTURE;
+Object.values(assets_1.default.TEXTURES).forEach(function (t) {
+    if (t.wallType) {
+        WALL_TEXTURE[t.wallType] = t;
+    }
+});
+var Level = /** @class */ (function () {
+    function Level(size, walls, npcs, skybox, randomize // TODO: drop?
+    ) {
+        if (walls === void 0) { walls = new Uint8Array(size * size); }
+        if (npcs === void 0) { npcs = []; }
+        if (randomize === void 0) { randomize = false; }
+        this.size = size;
+        this.walls = walls;
+        this.sprites = [];
+        this.npcs = npcs;
+        this.skybox = skybox;
+        if (randomize) {
+            this.randomize();
+        }
+    }
+    Level.isWallTypeVoidOrAir = function (type) {
+        return type === -1 /* VOID */ || type === 0 /* AIR */;
+    };
+    Level.prototype.update = function () {
+        // обновляем физику спрайтов
+        this.sprites.forEach(function (sprite) {
+            sprite.collisionWith = null;
+            sprite.detectCollisions();
+        });
+        this.npcs.forEach(function (npc) { return npc.update(); });
+    };
+    // возвращает стену
+    Level.prototype.getWallType = function (p) {
+        var x = Math.round(p.x);
+        var y = Math.round(p.y);
+        if (x < 0 || x > this.size - 1 || y < 0 || y > this.size - 1) {
+            return -1;
+        }
+        ;
+        var t = this.walls[y * this.size + x];
+        if (t === undefined || t === null) {
+            return -1;
+        }
+        else {
+            return t;
+        }
+    };
+    Level.prototype.isCollision = function (p) {
+        return !Level.isWallTypeVoidOrAir(this.getWallType(p));
+    };
+    Level.prototype.isNotCollision = function (p) {
+        return Level.isWallTypeVoidOrAir(this.getWallType(p));
+    };
+    Level.prototype.randomize = function () {
+        var wallsCount = 6;
+        for (var i = 0; i < this.size * this.size; i++) {
+            var r = Math.floor(Math.random() * (wallsCount - 0 + 1) + 0);
+            var s2 = this.size / 2;
+            if (Math.random() > 0.1 || i === s2 * this.size + s2) {
+                r = 0;
+            }
+            this.walls[i] = r;
+        }
+    };
+    Level.prototype.parseFromBitmap = function (bitmap) {
+        var data = [];
+        for (var y = 0; y < bitmap.height; y++) {
+            var _loop_1 = function (x) {
+                var offset = (y * (bitmap.width * 4)) + (x * 4);
+                var r = bitmap.imageData[offset];
+                var g = bitmap.imageData[offset + 1];
+                var b = bitmap.imageData[offset + 2];
+                var a = bitmap.imageData[offset + 3];
+                var color = new color_1.default(r, g, b, a);
+                walls_data_1.WALLS_DATA.forEach(function (wallData) {
+                    if (wallData.color.equals(color)) {
+                        data.push(wallData.code);
+                    }
+                });
+            };
+            for (var x = 0; x < bitmap.width; x++) {
+                _loop_1(x);
+            }
+        }
+        this.size = bitmap.width;
+        this.walls = new Uint8Array(data);
+    };
+    return Level;
+}());
+exports.default = Level;
+
+
+/***/ }),
+
+/***/ "./src/engine/math/angle.ts":
+/*!**********************************!*\
+  !*** ./src/engine/math/angle.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// спасибо, @davidfig!
+// https://github.com/davidfig/angle
+Object.defineProperty(exports, "__esModule", { value: true });
+var Angle;
+(function (Angle) {
+    Angle.PI_2 = Math.PI * 2;
+    Angle.UP = Math.PI / 2;
+    Angle.DOWN = 3 * Math.PI / 2;
+    Angle.LEFT = Math.PI;
+    Angle.RIGHT = 0;
+    Angle.NORTH = Angle.UP;
+    Angle.SOUTH = Angle.DOWN;
+    Angle.WEST = Angle.LEFT;
+    Angle.EAST = Angle.RIGHT;
+    function rad2deg(r) {
+        return r * (180 / Math.PI);
+    }
+    Angle.rad2deg = rad2deg;
+    function deg2rad(d) {
+        return d * (Math.PI / 180);
+    }
+    Angle.deg2rad = deg2rad;
+    // возвращает нормализованный угол в радианах между (0 — PI × 2)
+    function normalize(a) {
+        return a - Angle.PI_2 * Math.floor(a / Angle.PI_2);
+    }
+    Angle.normalize = normalize;
+    // возвращает нормализованную разницу между двумя углами в радианах
+    function difference(a, b) {
+        var c = Math.abs(a - b) % Angle.PI_2;
+        return c > Math.PI ? (Angle.PI_2 - c) : c;
+    }
+    Angle.difference = difference;
+    // возвращает ближайшую сторону света в радианах
+    function closestCardinal(a) {
+        var left = Angle.difference(a, Angle.LEFT);
+        var right = Angle.difference(a, Angle.RIGHT);
+        var up = Angle.difference(a, Angle.UP);
+        var down = Angle.difference(a, Angle.DOWN);
+        if (left <= right && left <= up && left <= down) {
+            return Angle.LEFT;
+        }
+        else if (right <= up && right <= down) {
+            return Angle.RIGHT;
+        }
+        else if (up <= down) {
+            return Angle.UP;
+        }
+        else {
+            return Angle.DOWN;
+        }
+    }
+    Angle.closestCardinal = closestCardinal;
+    // возвращает ближайшую горизонтальную (запад или восток )сторону света в радианах
+    function closestHorizontalCardinal(a) {
+        var left = Angle.difference(a, Angle.LEFT);
+        var right = Angle.difference(a, Angle.RIGHT);
+        return (left < right) ? Angle.LEFT : Angle.RIGHT;
+    }
+    Angle.closestHorizontalCardinal = closestHorizontalCardinal;
+    // возвращает ближайшую горизонтальную (запад или восток )сторону света в радианах
+    function closestVerticalCardinal(a) {
+        var up = Angle.difference(a, Angle.UP);
+        var down = Angle.difference(a, Angle.DOWN);
+        return (up < down) ? Angle.UP : Angle.DOWN;
+    }
+    Angle.closestVerticalCardinal = closestVerticalCardinal;
+    function betweenTwoPoints(a, b) {
+        return Angle.normalize(Math.atan2(b.y - a.y, b.x - a.x));
+    }
+    Angle.betweenTwoPoints = betweenTwoPoints;
+})(Angle || (Angle = {}));
+exports.default = Angle;
+
+
+/***/ }),
+
+/***/ "./src/engine/math/color.ts":
+/*!**********************************!*\
+  !*** ./src/engine/math/color.ts ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Color = /** @class */ (function () {
+    function Color(r, g, b, a) {
+        if (a === void 0) { a = 255; }
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
+    Color.prototype.equals = function (c) {
+        return this.r === c.r &&
+            this.g === c.g &&
+            this.b === c.b &&
+            this.a === c.a;
+    };
+    Color.prototype.getRGBAString = function () {
+        return "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + this.a / 255 + ")";
+    };
+    return Color;
+}());
+exports.default = Color;
+
+
+/***/ }),
+
+/***/ "./src/engine/math/vector2.ts":
+/*!************************************!*\
+  !*** ./src/engine/math/vector2.ts ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Vector2 = /** @class */ (function () {
+    function Vector2(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    Object.defineProperty(Vector2.prototype, "width", {
+        get: function () { return this.x; },
+        set: function (v) { this.x = v; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Vector2.prototype, "height", {
+        get: function () { return this.y; },
+        set: function (v) { this.y = v; },
+        enumerable: true,
+        configurable: true
+    });
+    Vector2.distance = function (a, b) {
+        return Math.sqrt(Math.pow((a.x - b.x), 2) + Math.pow((a.y - b.y), 2));
+    };
+    Vector2.prototype.add = function (v) {
+        this.x += v.x;
+        this.y += v.y;
+        return this;
+    };
+    Vector2.prototype.sub = function (v) {
+        this.x -= v.x;
+        this.y -= v.y;
+        return this;
+    };
+    Vector2.prototype.mult = function (v) {
+        this.x *= v.x;
+        this.y *= v.y;
+        return this;
+    };
+    Vector2.prototype.div = function (v) {
+        this.x /= v.x;
+        this.y /= v.y;
+        return this;
+    };
+    Vector2.prototype.neg = function () {
+        this.x *= -1;
+        this.y *= -1;
+        return this;
+    };
+    Vector2.prototype.copy = function () {
+        return new Vector2(this.x, this.y);
+    };
+    return Vector2;
+}());
+exports.default = Vector2;
+
+
+/***/ }),
+
+/***/ "./src/engine/platform/canvas.ts":
+/*!***************************************!*\
+  !*** ./src/engine/platform/canvas.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.canvas = document.querySelector('#render-output');
+exports.context = exports.canvas.getContext('2d');
+
+
+/***/ }),
+
+/***/ "./src/engine/platform/keyboard.ts":
+/*!*****************************************!*\
+  !*** ./src/engine/platform/keyboard.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var KEYBOARD_STATE = {
+    keyCodes: [],
+    alt: false,
+    ctrl: false,
+    meta: false,
+    shift: false
+};
+exports.default = KEYBOARD_STATE;
+var keyboardListeners = [];
+exports.keyboardListeners = keyboardListeners;
+function onkeydown(event) {
+    // event.preventDefault();
+    if (!KEYBOARD_STATE.keyCodes.includes(event.keyCode)) {
+        KEYBOARD_STATE.keyCodes.push(event.keyCode);
+    }
+    ;
+    KEYBOARD_STATE.alt = event.altKey;
+    KEYBOARD_STATE.ctrl = event.ctrlKey;
+    KEYBOARD_STATE.meta = event.metaKey;
+    KEYBOARD_STATE.shift = event.shiftKey;
+}
+;
+function onkeyup(event) {
+    // event.preventDefault();
+    KEYBOARD_STATE.keyCodes.splice(KEYBOARD_STATE.keyCodes.indexOf(event.keyCode), 1);
+    KEYBOARD_STATE.alt = event.altKey;
+    KEYBOARD_STATE.ctrl = event.ctrlKey;
+    KEYBOARD_STATE.meta = event.metaKey;
+    KEYBOARD_STATE.shift = event.shiftKey;
+}
+;
+function initKeyboard() {
+    window.addEventListener('keydown', onkeydown);
+    window.addEventListener('keyup', onkeyup);
+}
+exports.initKeyboard = initKeyboard;
+;
+function addKeyboardListener(listener) {
+    keyboardListeners.push(listener);
+}
+exports.addKeyboardListener = addKeyboardListener;
+;
+
+
+/***/ }),
+
+/***/ "./src/engine/platform/mouse.ts":
+/*!**************************************!*\
+  !*** ./src/engine/platform/mouse.ts ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// почему не простой mousemove, если он и так достаточно часто срабатывает,
+// а заёб с состоянием мыши, как и у клавиатуры? а потому что потом пересесть на
+// pointer lock api будет расплюнуть, и с кликами один и тот же интерфейс,
+// и с клавой логика одна
+Object.defineProperty(exports, "__esModule", { value: true });
+var MOUSE_STATE = {
+    movementX: 0,
+    movementY: 0
+};
+exports.default = MOUSE_STATE;
+var mouseListeners = [];
+exports.mouseListeners = mouseListeners;
+function onmousemove(event) {
+    // event.preventDefault();
+    MOUSE_STATE.movementX = event.movementX;
+    MOUSE_STATE.movementY = event.movementY;
+}
+;
+function initMouse() {
+    window.addEventListener('mousemove', onmousemove);
+}
+exports.initMouse = initMouse;
+;
+function addMouseListener(listener) {
+    mouseListeners.push(listener);
+}
+exports.addMouseListener = addMouseListener;
+;
+// т.к. тик выполняется быстрее mousemove, а что-то типа mousemovend нет,
+// нам надо вручную обнулять состояние мыши каждый тик после срабатывания слушателей
+function clearMouse() {
+    MOUSE_STATE.movementX = 0;
+    MOUSE_STATE.movementY = 0;
+}
+exports.clearMouse = clearMouse;
+;
+
+
+/***/ }),
+
+/***/ "./src/engine/platform/resize.ts":
+/*!***************************************!*\
+  !*** ./src/engine/platform/resize.ts ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var canvas_1 = __webpack_require__(/*! ./canvas */ "./src/engine/platform/canvas.ts");
+function onresize(canvas, camera) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas_1.context.imageSmoothingEnabled = false;
+    camera.resize();
+}
+;
+exports.default = onresize;
+
+
+/***/ }),
+
+/***/ "./src/engine/platform/touch.ts":
+/*!**************************************!*\
+  !*** ./src/engine/platform/touch.ts ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var vector2_1 = __webpack_require__(/*! ../math/vector2 */ "./src/engine/math/vector2.ts");
+var angle_1 = __webpack_require__(/*! ../math/angle */ "./src/engine/math/angle.ts");
+var TOUCH_STATE = {
+    active: false,
+    start: new vector2_1.default(0, 0),
+    current: new vector2_1.default(0, 0),
+    distance: 0,
+    rotation: 0
+};
+exports.default = TOUCH_STATE;
+function touchstart(e) {
+    TOUCH_STATE.active = true;
+    TOUCH_STATE.start.x = e.touches[0].clientX;
+    TOUCH_STATE.start.y = e.touches[0].clientY;
+}
+exports.touchstart = touchstart;
+function touchmove(e) {
+    TOUCH_STATE.current.x = e.touches[0].clientX;
+    TOUCH_STATE.current.y = e.touches[0].clientY;
+    TOUCH_STATE.distance = vector2_1.default.distance(TOUCH_STATE.start, TOUCH_STATE.current);
+    TOUCH_STATE.rotation = angle_1.default.betweenTwoPoints(TOUCH_STATE.start, TOUCH_STATE.current);
+}
+exports.touchmove = touchmove;
+function touchend(e) {
+    TOUCH_STATE.active = false;
+    TOUCH_STATE.start.x = 0;
+    TOUCH_STATE.start.y = 0;
+    TOUCH_STATE.current.x = 0;
+    TOUCH_STATE.current.y = 0;
+    TOUCH_STATE.distance = 0;
+    TOUCH_STATE.rotation = 0;
+}
+exports.touchend = touchend;
+
+
+/***/ }),
+
+/***/ "./src/engine/render/bitmap.ts":
+/*!*************************************!*\
+  !*** ./src/engine/render/bitmap.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Bitmap = /** @class */ (function () {
+    function Bitmap(image) {
+        this.image = image;
+        this.width = this.image.naturalWidth;
+        this.height = this.image.naturalHeight;
+        this.imageData = this.getImageData();
+    }
+    // public render(): void {
+    //
+    // }
+    Bitmap.prototype.getImageData = function () {
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+        canvas.width = this.width;
+        canvas.height = this.height;
+        context.drawImage(this.image, 0, 0);
+        var imageData = context.getImageData(0, 0, this.width, this.height);
+        canvas.remove();
+        return imageData.data;
+    };
+    return Bitmap;
+}());
+exports.default = Bitmap;
+
+
+/***/ }),
+
+/***/ "./src/engine/render/camera.ts":
+/*!*************************************!*\
+  !*** ./src/engine/render/camera.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = __webpack_require__(/*! ../../config */ "./src/config.ts");
+var assets_1 = __webpack_require__(/*! ../../assets */ "./src/assets.ts");
+var vector2_1 = __webpack_require__(/*! ../math/vector2 */ "./src/engine/math/vector2.ts");
+var angle_1 = __webpack_require__(/*! ../math/angle */ "./src/engine/math/angle.ts");
+var color_1 = __webpack_require__(/*! ../math/color */ "./src/engine/math/color.ts");
+var gl_1 = __webpack_require__(/*! ./gl */ "./src/engine/render/gl.ts");
+var level_1 = __webpack_require__(/*! ../level */ "./src/engine/level.ts");
+var canvas_1 = __webpack_require__(/*! ../platform/canvas */ "./src/engine/platform/canvas.ts");
+var touch_1 = __webpack_require__(/*! ../platform/touch */ "./src/engine/platform/touch.ts");
+var Camera = /** @class */ (function () {
+    function Camera(level, fov) {
+        if (fov === void 0) { fov = Math.PI / 2; }
+        this.position = new vector2_1.default(0, 0);
+        this.heightOffset = 0;
+        this.rotation = 0;
+        this.minSpriteDistance = 0.01;
+        this.rays = [];
+        this.rayDistance = 15;
+        this.rayStep = 0.01;
+        this.raysCount = 128;
+        this.gunOffset = 0;
+        this.level = level;
+        this.fov = fov;
+        this.resize();
+    }
+    Camera.prototype.render = function () {
+        this.castRays();
+        this.zBuffer = new Float32Array(this.ww);
+        this.renderGround();
+        this.renderSkybox();
+        this.renderWalls();
+        // this.renderFloor();
+        this.renderNPCs();
+        this.renderGun();
+        // this.renderZBuffer();
+        this.postProcess();
+        if (window.isMobile) {
+            this.renderTouchControls();
+        }
+    };
+    Camera.prototype.renderGun = function () {
+        var bitmap = assets_1.default.TEXTURES['gun'].bitmap;
+        if (window.isMobile) {
+            this.gunOffset -= 15;
+        }
+        else {
+            this.gunOffset -= 20;
+        }
+        if (this.gunOffset < 0) {
+            this.gunOffset = 0;
+        }
+        var now = Date.now();
+        var w = this.ww / 3.5;
+        var h = w;
+        var x = (this.ww + 50) - w + this.heightOffset / 2.5 - this.gunOffset + (Math.cos(now / 500) * 15);
+        var y = (this.wh + 50) - h + this.heightOffset * 1 - this.gunOffset + (Math.cos(now / 500) * 20);
+        if (window.isMobile) {
+            h = this.wh / 4;
+            w = h;
+            x = (this.ww + 10) - w + this.heightOffset / 2.5 - this.gunOffset / 2 + (Math.cos(now / 500) * 15);
+            y = (this.wh - 20) - h + this.heightOffset * 1 - this.gunOffset / 1.25 + (Math.cos(now / 500) * 20);
+        }
+        gl_1.default.drawImage(bitmap, new vector2_1.default(0, 0), new vector2_1.default(bitmap.width, bitmap.height), new vector2_1.default(x, y), new vector2_1.default(w, h), Math.PI / (16 - Math.cos(now / 500) * 5));
+    };
+    Camera.prototype.postProcess = function () {
+        var a = 255 - this.level.player.health / 100 * 255;
+        gl_1.default.drawRect(new vector2_1.default(0, 0), new vector2_1.default(this.ww, this.wh), new color_1.default(160 * Math.random(), 0, 0, a * 1));
+    };
+    // private renderFloor(): void {
+    //   // TODO: в один луп пробежку по лучам
+    //   for (let i = 0; i < this.rays.length; i++) {
+    //     this.renderFloorStripe(this.rays[i]);
+    //   }
+    // }
+    // private renderFloorStripe(ray: Ray): void {
+    //   let floorBitmap = ASSETS.TEXTURES['floor'].bitmap;
+    //   let wallHeight = this.wh / ray.distance;
+    //   let floorHeight;
+    //   let drawX = this.rayWidth * ray.index;
+    //   let drawY;
+    //   if (ray.distance !== -1) {
+    //     floorHeight = (this.wh - this.wh / ray.distance) / 2 - this.heightOffset;
+    //     drawY = this.wh / 2 + wallHeight / 2 + this.heightOffset;
+    //   } else {
+    //     // если рисуем пол для пустоты
+    //     floorHeight = this.wh / 2 - this.heightOffset;
+    //     drawY = this.wh / 2 + this.heightOffset;
+    //   }
+    //   gl.drawImage(
+    //     floorBitmap,
+    //     new Vector2(0, 0),
+    //     new Vector2(floorBitmap.width, floorBitmap.height),
+    //     new Vector2(600, 500),
+    //     new Vector2(50, 50),
+    //     3
+    //   );
+    //   // gl.drawRect(
+    //   //   new Vector2(drawX, drawY),
+    //   //   new Vector2(this.rayWidth, floorHeight),
+    //   //   new Color(255 * Math.random(), 255 * Math.random(), 255 * Math.random())
+    //   // );
+    // }
+    Camera.prototype.resize = function () {
+        this.ww = canvas_1.canvas.width;
+        this.wh = canvas_1.canvas.height;
+        this.rayWidth = this.ww / this.rays.length;
+        this.zBuffer = new Float32Array(this.ww);
+    };
+    Camera.prototype.castRays = function () {
+        this.rays = [];
+        for (var i = 0; i < this.raysCount; i++) {
+            var d = -1;
+            var s = void 0;
+            var t = -1 /* VOID */;
+            var r = angle_1.default.normalize(this.rotation - this.fov / 2 + this.fov * i / this.raysCount);
+            var a = new vector2_1.default(this.position.x, this.position.y);
+            var b = new vector2_1.default(a.x, a.y);
+            // части луча
+            for (var j = 0; j < this.rayDistance; j += this.rayStep) {
+                // сначала идём вперёд по X и смотрим, есть ли соприкосновение
+                b.x = a.x + j * Math.cos(r);
+                t = this.level.getWallType(b);
+                // запад или восток
+                if (!level_1.default.isWallTypeVoidOrAir(t)) {
+                    d = j;
+                    s = (a.x < b.x) ? 2 /* WEST */ : 3 /* EAST */; // <= || >= ?
+                    break;
+                }
+                ;
+                // нет соприкосновения? погнали по Y
+                b.y = a.y + j * Math.sin(r);
+                t = this.level.getWallType(b);
+                // север или юг
+                if (!level_1.default.isWallTypeVoidOrAir(t)) {
+                    d = j;
+                    s = (a.y < b.y) ? 0 /* NORTH */ : 1 /* SOUTH */; // <= || >= ?
+                    break;
+                }
+                ;
+            }
+            ;
+            if (d !== -1) {
+                d *= Math.cos(r - this.rotation);
+            }
+            ;
+            this.rays.push({
+                a: a,
+                b: b,
+                distance: d,
+                rotation: r,
+                side: s,
+                type: t,
+                index: i
+            });
+        }
+    };
+    // заполняем zbuffer — т.к. мы рендерим по одной полоске, его надо вручную продлять
+    Camera.prototype.fillWallStripeZBuffer = function (ray) {
+        var start = Math.ceil(this.rayWidth * ray.index);
+        var end = this.rayWidth * (ray.index + 1);
+        for (var j = start; j < end; j++) {
+            this.zBuffer[j] = ray.distance;
+        }
+        ;
+    };
+    Camera.prototype.renderWalls = function () {
+        for (var i = 0; i < this.rays.length; i++) {
+            this.renderWallStripe(this.rays[i]);
+        }
+    };
+    Camera.prototype.renderWallStripe = function (ray) {
+        this.fillWallStripeZBuffer(ray);
+        // если пустота, то не рисуем
+        if (ray.distance === -1) {
+            return;
+        }
+        ;
+        var bitmap = level_1.WALL_TEXTURE[ray.type].bitmap;
+        var rotation = ray.rotation;
+        var height = this.wh / ray.distance;
+        var z = ray.distance / this.rayDistance;
+        var y = this.wh / 2 - height / 2 + this.heightOffset;
+        var fractional;
+        var fractionalX = ray.b.x % 1;
+        var fractionalY = ray.b.y % 1;
+        // понимаем какая стена и в зависимости от этого пользуемся данными от округления
+        // позиции падения взгляда, чтобы определить насколько нам нужно сдвинуться в текстуре
+        // чтобы получить позицию текстуры полоски
+        switch (ray.side) {
+            case 0 /* NORTH */:
+                // инвертируем текстуру
+                fractional = 1 - fractionalX;
+                break;
+            case 3 /* EAST */:
+                fractional = 1 - fractionalY;
+                break;
+            case 1 /* SOUTH */:
+                fractional = fractionalX;
+                break;
+            case 2 /* WEST */:
+                fractional = fractionalY;
+                break;
+        }
+        ;
+        // сдвигаем текстуру на половинку
+        fractional = (fractional >= 0.5) ? fractional - 0.5 : fractional + 0.5;
+        // округляем, чтобы закрыть белые дырки
+        var textureX = Math.floor(bitmap.width * fractional);
+        gl_1.default.drawImage(bitmap, new vector2_1.default(textureX, 0), new vector2_1.default(1, bitmap.height), new vector2_1.default(this.rayWidth * ray.index, y), new vector2_1.default(this.rayWidth, height));
+        var start = Math.floor(this.rayWidth * ray.index);
+        var end = this.rayWidth * (ray.index + 1);
+        var width = Math.floor(end - start);
+        if (config_1.default.LIGHTING_FAKE_CONTRAST && (ray.side === 2 /* WEST */ || ray.side === 3 /* EAST */)) {
+            var color = new color_1.default(0, 0, 0, 128);
+            gl_1.default.drawRect(new vector2_1.default(start, y), new vector2_1.default(width, height), color);
+        }
+        if (config_1.default.FOG) {
+            var color = config_1.default.FOG_COLOR;
+            color.a = 255 * z * config_1.default.FOG_FACTOR;
+            gl_1.default.drawRect(new vector2_1.default(start, y), new vector2_1.default(width, height), color);
+        }
+    };
+    Camera.prototype.renderNPC = function (sprite) {
+        var rotation = angle_1.default.betweenTwoPoints(this.position, sprite.position);
+        var distance = vector2_1.default.distance(this.position, sprite.position);
+        if (distance > this.rayDistance) {
+            return;
+        }
+        // чтобы на ноль тут не делить
+        if (distance < this.minSpriteDistance) {
+            distance = this.minSpriteDistance;
+        }
+        // пока исключительно квадратные текстуры
+        var width = this.wh / distance;
+        var height = this.wh / distance;
+        var r = rotation - this.rotation;
+        // обычно, разница между поворотом спрайта и камеры лежит между -1 и 1.
+        // но если смотреть на спрайт с западной стороны, мы попадаем на тот момент,
+        // когда поворот камеры превышает PI_2 и становится 0 (т.к. мы его нормализуем между 0 и PI_2)
+        // и разница между поворотом спрайта и камеры зашкаливает, и вычисляются неправильные экранные координаты.
+        // исправляем это, нивелируя нормализацию поворота камеры.
+        // конечно, можно с этим не париться, используя матрицу преобразования (и там фишай вроде бы чинится), но это на будущее
+        // https://lodev.org/cgtutor/raycasting3.html
+        if (r > 1) {
+            r -= angle_1.default.PI_2;
+        }
+        else if (r < -1) {
+            r += angle_1.default.PI_2;
+        }
+        // не рисуем спрайты, которые не в поле зрения камеры
+        var fov2 = this.fov / 2;
+        if (r <= -fov2 || r >= fov2) {
+            return;
+        }
+        var startX = (r) * (this.ww) / (this.fov) + (this.ww) / 2 - width / 2;
+        var endX = startX + width;
+        var y = this.wh / 2 - height / 2 + this.heightOffset;
+        for (var j = startX; j < endX; j += this.rayWidth) {
+            var wallStripe = this.zBuffer[Math.ceil(j)];
+            // -1 не учитывается
+            if (wallStripe !== undefined &&
+                wallStripe !== null &&
+                wallStripe < distance &&
+                wallStripe !== -1) {
+                continue;
+            }
+            ;
+            var textureX = sprite.frame * sprite.frameWidth + Math.floor((j - startX) * sprite.frameWidth / width);
+            gl_1.default.drawImage(sprite.bitmap, new vector2_1.default(textureX, 0), new vector2_1.default(1, sprite.bitmap.height), new vector2_1.default(j, y), new vector2_1.default(this.rayWidth, height));
+            // if (CONFIG.FOG) {
+            //   let z = distance / this.rayDistance;
+            //   let color = CONFIG.FOG_COLOR;
+            //   color.a = 255 * z * CONFIG.FOG_FACTOR;
+            //   gl.drawRect(
+            //     new Vector2(j, y),
+            //     new Vector2(this.rayWidth, height),
+            //     color
+            //   );
+            // }
+        }
+    };
+    Camera.prototype.renderNPCs = function () {
+        this.sortSprites();
+        for (var i = 0; i < this.level.npcs.length; i++) {
+            this.renderNPC(this.level.npcs[i]);
+        }
+    };
+    // сортируем спрайты по дальности от игрока, чтобы правильно отрисовать
+    Camera.prototype.sortSprites = function () {
+        var _this = this;
+        this.level.sprites.sort(function (a, b) {
+            return vector2_1.default.distance(_this.position, b.position) - vector2_1.default.distance(_this.position, a.position);
+        });
+    };
+    Camera.prototype.renderGround = function () {
+        gl_1.default.drawRect(new vector2_1.default(0, 0), new vector2_1.default(this.ww, this.wh), new color_1.default(0, 0, 0));
+        // gl.drawGradient(
+        //   new Vector2(0, 0),
+        //   new Vector2(this.ww, this.wh),
+        //   0,
+        //   new Color(255, 255, 255),
+        //   new Color(0, 0, 0)
+        // );
+    };
+    Camera.prototype.renderSkybox = function () {
+        var skybox = this.level.skybox;
+        var w = skybox.width * (this.wh / skybox.height) * 2;
+        var h = this.wh / 2 + this.heightOffset;
+        var x = (this.rotation / Math.PI / 2) * -w;
+        var y = 0;
+        gl_1.default.drawImage(skybox, new vector2_1.default(0, 0), new vector2_1.default(skybox.width, skybox.height), new vector2_1.default(x, y), new vector2_1.default(w, h));
+        // если нужно повторить скайбокс
+        if (x < w - this.ww) {
+            gl_1.default.drawImage(skybox, new vector2_1.default(0, 0), new vector2_1.default(skybox.width, skybox.height), new vector2_1.default(x + w, y), new vector2_1.default(w, h));
+        }
+        gl_1.default.drawRect(new vector2_1.default(0, 0), new vector2_1.default(this.ww, h), new color_1.default(0, 0, 0, Math.random() * 256));
+    };
+    Camera.prototype.renderTouchControls = function () {
+        var d = touch_1.default.distance;
+        if (d > 100) {
+            d = 100;
+        }
+        gl_1.default.drawArc(touch_1.default.start, d, 10, new color_1.default(255, 255, 255, 128));
+    };
+    Camera.prototype.renderZBuffer = function () {
+        var h = 15;
+        for (var i = 0; i < this.zBuffer.length; i++) {
+            if (this.zBuffer[i] === -1) {
+                continue;
+            }
+            var v = this.zBuffer[i] / this.rayDistance;
+            var c = v * 255;
+            gl_1.default.drawLine(new vector2_1.default(i, this.wh / 2 + this.heightOffset - h / v), new vector2_1.default(i, this.wh / 2 + this.heightOffset + h / v), new color_1.default(c, c, c));
+        }
+    };
+    return Camera;
+}());
+exports.default = Camera;
+
+
+/***/ }),
+
+/***/ "./src/engine/render/gl.ts":
+/*!*********************************!*\
+  !*** ./src/engine/render/gl.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var canvas_1 = __webpack_require__(/*! ../platform/canvas */ "./src/engine/platform/canvas.ts");
+var angle_1 = __webpack_require__(/*! ../math/angle */ "./src/engine/math/angle.ts");
+var color_1 = __webpack_require__(/*! ../math/color */ "./src/engine/math/color.ts");
+var gl;
+(function (gl) {
+    // эта версия без поворота, нужно проверить, насколько она быстрее версии с поворотом
+    // export function drawRect(position: Vector2, size: Vector2, color: Color): void {
+    //   context.fillStyle = color.getRGBAString();
+    //   context.fillRect(position.x, position.y, size.width, size.height);
+    // }
+    // rotation — в радианах
+    function drawRect(position, size, color, rotation) {
+        if (rotation === void 0) { rotation = 0; }
+        canvas_1.context.save();
+        canvas_1.context.beginPath();
+        // точка, относительно которой транслейт — центр
+        var translateX = position.x + size.width / 2;
+        var translateY = position.y + size.height / 2;
+        canvas_1.context.translate(translateX, translateY);
+        canvas_1.context.rotate(rotation);
+        // context.translate(-translateX, -translateY);
+        if (color instanceof color_1.default) {
+            color = color.getRGBAString();
+        }
+        ;
+        canvas_1.context.fillStyle = color;
+        canvas_1.context.fillRect(-size.width / 2, -size.height / 2, size.width, size.height);
+        canvas_1.context.closePath();
+        canvas_1.context.restore();
+    }
+    gl.drawRect = drawRect;
+    // рисует не fill, а stroke
+    function drawArc(position, radius, thickness, color) {
+        canvas_1.context.save();
+        canvas_1.context.beginPath();
+        if (color instanceof color_1.default) {
+            color = color.getRGBAString();
+        }
+        ;
+        canvas_1.context.lineWidth = thickness;
+        canvas_1.context.strokeStyle = color;
+        canvas_1.context.arc(position.x, position.y, radius, 0, angle_1.default.PI_2);
+        canvas_1.context.stroke();
+        canvas_1.context.closePath();
+        canvas_1.context.restore();
+    }
+    gl.drawArc = drawArc;
+    function drawImage(bitmap, bitmapPosition, bitmapSize, drawPosition, drawSize, drawRotation) {
+        if (drawRotation === void 0) { drawRotation = 0; }
+        canvas_1.context.save();
+        // точка, относительно которой транслейт — центр
+        // if (drawRotation !== 0) {}
+        var translateX = drawPosition.x + drawSize.width / 2;
+        var translateY = drawPosition.y + drawSize.height / 2;
+        canvas_1.context.translate(translateX, translateY);
+        canvas_1.context.rotate(drawRotation);
+        canvas_1.context.translate(-translateX, -translateY);
+        canvas_1.context.drawImage(bitmap.image, bitmapPosition.x, bitmapPosition.y, bitmapSize.width, bitmapSize.height, drawPosition.x, drawPosition.y, drawSize.width, drawSize.height);
+        canvas_1.context.restore();
+    }
+    gl.drawImage = drawImage;
+    // TODO: create normal gradient function
+    function drawGradient(position, size, rotation) {
+        var colors = [];
+        for (var _i = 3; _i < arguments.length; _i++) {
+            colors[_i - 3] = arguments[_i];
+        }
+        var gradient = canvas_1.context.createLinearGradient(0, 0, 0, size.height);
+        for (var i = 0; i < colors.length; i++) {
+            gradient.addColorStop(i, colors[i].getRGBAString());
+        }
+        drawRect(position, size, gradient, rotation);
+    }
+    gl.drawGradient = drawGradient;
+    function drawLine(v1, v2, color) {
+        canvas_1.context.save();
+        canvas_1.context.beginPath();
+        canvas_1.context.strokeStyle = color.getRGBAString();
+        canvas_1.context.moveTo(v1.x, v1.y);
+        canvas_1.context.lineTo(v2.x, v2.y);
+        canvas_1.context.stroke();
+        canvas_1.context.closePath();
+        canvas_1.context.restore();
+    }
+    gl.drawLine = drawLine;
+    function clear() {
+        canvas_1.context.clearRect(0, 0, canvas_1.canvas.width, canvas_1.canvas.height);
+    }
+    gl.clear = clear;
+})(gl || (gl = {}));
+exports.default = gl;
+
+
+/***/ }),
+
+/***/ "./src/engine/render/sprite.ts":
+/*!*************************************!*\
+  !*** ./src/engine/render/sprite.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var vector2_1 = __webpack_require__(/*! ../math/vector2 */ "./src/engine/math/vector2.ts");
+// спрайт — это плоская картинка, которая рисуется всегда лицом к игроку
+var Sprite = /** @class */ (function () {
+    function Sprite(bitmap, position, level) {
+        this.collisionTriggerDistance = 1;
+        this.bitmap = bitmap;
+        this.position = position;
+        this.level = level;
+        this.level.sprites.push(this);
+    }
+    // пока только игрок
+    Sprite.prototype.detectCollisions = function () {
+        var distance = vector2_1.default.distance(this.position, this.level.player.position);
+        if (distance <= this.collisionTriggerDistance) {
+            this.onCollision(this.level.player);
+        }
+    };
+    Sprite.prototype.onCollision = function (trigger) {
+        this.collisionWith = trigger;
+    };
+    return Sprite;
+}());
+exports.default = Sprite;
+
+
+/***/ }),
+
+/***/ "./src/engine/tick.ts":
+/*!****************************!*\
+  !*** ./src/engine/tick.ts ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var gl_1 = __webpack_require__(/*! ./render/gl */ "./src/engine/render/gl.ts");
+var keyboard_1 = __webpack_require__(/*! ./platform/keyboard */ "./src/engine/platform/keyboard.ts");
+var mouse_1 = __webpack_require__(/*! ./platform/mouse */ "./src/engine/platform/mouse.ts");
+function tick(callback) {
+    keyboard_1.keyboardListeners.forEach(function (listener) { return listener(); });
+    mouse_1.mouseListeners.forEach(function (listener) { return listener(); });
+    mouse_1.clearMouse();
+    gl_1.default.clear();
+    callback(); // gameLogicTick()?
+    requestAnimationFrame(tick.bind(this, callback));
+}
+exports.default = tick;
+
+
+/***/ }),
+
+/***/ "./src/game/npc.ts":
+/*!*************************!*\
+  !*** ./src/game/npc.ts ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var assets_1 = __webpack_require__(/*! ../assets */ "./src/assets.ts");
+var vector2_1 = __webpack_require__(/*! ../engine/math/vector2 */ "./src/engine/math/vector2.ts");
+var sprite_1 = __webpack_require__(/*! ../engine/render/sprite */ "./src/engine/render/sprite.ts");
+var level_1 = __webpack_require__(/*! ../engine/level */ "./src/engine/level.ts");
+window.kills = 0;
+var NPC = /** @class */ (function (_super) {
+    __extends(NPC, _super);
+    function NPC(bitmap, position, level, framesCount, frameWidth) {
+        var _this = _super.call(this, bitmap, position, level) || this;
+        // TODO: move to AnimatedSprite
+        _this.frame = 0;
+        _this.framesCount = 0;
+        _this.frameWidth = 0;
+        _this.destroyed = false;
+        _this.corpse = false;
+        _this.moveSpeed = 0.0085;
+        _this.framesCount = framesCount;
+        _this.frameWidth = frameWidth;
+        _this.level.npcs.push(_this);
+        return _this;
+    }
+    NPC.prototype.update = function () {
+        var p = this.position.copy();
+        var factor = new vector2_1.default(this.moveSpeed, this.moveSpeed);
+        var diff = p.sub(this.level.player.position).mult(factor);
+        var collisionVector = new vector2_1.default(this.position.x - diff.x, this.position.y - diff.y);
+        var t = this.level.getWallType(collisionVector);
+        if (!this.corpse) {
+            if (!level_1.default.isWallTypeVoidOrAir(t)) {
+                this.position.add(diff);
+            }
+            else {
+                this.position.sub(diff);
+            }
+        }
+        if (Math.random() > 0.65) {
+            this.frame++;
+        }
+        if (this.frame >= this.framesCount) {
+            if (!this.destroyed) {
+                this.frame = 0;
+            }
+            else {
+                // this.level.npcs = this.level.npcs.filter(n => n !== this);
+                // this.level.sprites = this.level.sprites.filter(s => s !== this);
+                this.bitmap = assets_1.default.TEXTURES['corpse'].bitmap;
+                this.frame = 0;
+                this.framesCount = 8;
+                this.frameWidth = 51;
+                this.corpse = true;
+            }
+        }
+    };
+    NPC.prototype.destroy = function (onRestart) {
+        if (onRestart === void 0) { onRestart = false; }
+        this.destroyed = true;
+        this.bitmap = assets_1.default.TEXTURES['explosion'].bitmap;
+        this.frame = 0;
+        this.framesCount = 6;
+        this.frameWidth = 32;
+        var r = Math.floor(Math.random() * (7 - 1 + 1) + 1);
+        if (!onRestart || (onRestart && Math.random() < 0.05)) {
+            var s = window.sound.play('scream' + r);
+            window.sound.volume(0.5, s);
+            window.sound.fade(0.85, 1, window.sound.duration(s) * 0.15, s);
+        }
+        if (!onRestart) {
+            window.kills++;
+            document.querySelector('#count').textContent = window.kills;
+        }
+    };
+    NPC.prototype.onCollision = function (trigger) {
+        this.collisionWith = trigger;
+        if (!this.corpse && !this.destroyed) {
+            this.level.player.health -= 1;
+        }
+    };
+    return NPC;
+}(sprite_1.default));
+exports.default = NPC;
+
+
+/***/ }),
+
+/***/ "./src/game/player.ts":
+/*!****************************!*\
+  !*** ./src/game/player.ts ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var vector2_1 = __webpack_require__(/*! ../engine/math/vector2 */ "./src/engine/math/vector2.ts");
+var angle_1 = __webpack_require__(/*! ../engine/math/angle */ "./src/engine/math/angle.ts");
+var keyboard_1 = __webpack_require__(/*! ../engine/platform/keyboard */ "./src/engine/platform/keyboard.ts");
+var mouse_1 = __webpack_require__(/*! ../engine/platform/mouse */ "./src/engine/platform/mouse.ts");
+var touch_1 = __webpack_require__(/*! ../engine/platform/touch */ "./src/engine/platform/touch.ts");
+var Player = /** @class */ (function () {
+    function Player(camera, level, position, rotation) {
+        if (position === void 0) { position = new vector2_1.default(0, 0); }
+        if (rotation === void 0) { rotation = 0; }
+        this.rotation = 0;
+        this.health = 100;
+        this.moveSpeed = 0.1;
+        this.rotateSpeed = Math.PI / 64;
+        this.noddlingStabilizationSpeed = 20;
+        this.noddlingFrequency = 120;
+        this.noddlingForce = 3;
+        this.isMoving = false;
+        this.camera = camera;
+        this.level = level;
+        this.position = position;
+        this.rotation = rotation;
+    }
+    Player.prototype.update = function () {
+        this.nullifyHeightOffset();
+        this.isMoving = false;
+        this.health += 1;
+        this.updateTouchControls();
+        if (this.health > 100) {
+            this.health = 100;
+        }
+        if (this.health < 0) {
+            // (<any>window).restart(); ////////////////
+        }
+    };
+    Player.prototype.move = function (direction, moveSpeed, rotateSpeed) {
+        if (moveSpeed === void 0) { moveSpeed = this.moveSpeed; }
+        if (rotateSpeed === void 0) { rotateSpeed = this.rotateSpeed; }
+        var p = this.position;
+        var distanceX;
+        var distanceY;
+        var collisionX;
+        var collisionY;
+        var time = performance.now();
+        this.isMoving = true;
+        switch (direction) {
+            case 0 /* UP */:
+                distanceX = moveSpeed * Math.cos(this.rotation);
+                distanceY = moveSpeed * Math.sin(this.rotation);
+                collisionX = this.level.isNotCollision(new vector2_1.default(p.x + distanceX, p.y));
+                collisionY = this.level.isNotCollision(new vector2_1.default(p.x, p.y + distanceY));
+                if (collisionX) {
+                    this.position.x += distanceX;
+                }
+                if (collisionY) {
+                    this.position.y += distanceY;
+                }
+                if (collisionX && collisionY) {
+                    this.camera.heightOffset -= Math.cos(time / this.noddlingFrequency) * this.noddlingForce;
+                }
+                break;
+            case 2 /* LEFT */:
+                this.rotation -= rotateSpeed;
+                break;
+            case 1 /* DOWN */:
+                distanceX = moveSpeed * Math.cos(this.rotation);
+                distanceY = moveSpeed * Math.sin(this.rotation);
+                collisionX = this.level.isNotCollision(new vector2_1.default(p.x - distanceX, p.y));
+                collisionY = this.level.isNotCollision(new vector2_1.default(p.x, p.y - distanceY));
+                if (collisionX) {
+                    this.position.x -= distanceX;
+                }
+                if (collisionY) {
+                    this.position.y -= distanceY;
+                }
+                if (collisionX && collisionY) {
+                    this.camera.heightOffset += Math.cos(time / this.noddlingFrequency) * this.noddlingForce;
+                }
+                break;
+            case 3 /* RIGHT */:
+                this.rotation += rotateSpeed;
+                break;
+        }
+        this.rotation = angle_1.default.normalize(this.rotation);
+        this.camera.position = this.position;
+        this.camera.rotation = this.rotation;
+    };
+    Player.prototype.onKeyboardTick = function () {
+        // TODO: check indexOf vs. includes perfomance?
+        // как тут покрасивше организвовать код?
+        if (keyboard_1.default.keyCodes.includes(38 /* ARROW_UP */) || keyboard_1.default.keyCodes.includes(87 /* W */)) {
+            this.move(0 /* UP */);
+        }
+        if (keyboard_1.default.keyCodes.includes(37 /* ARROW_LEFT */) || keyboard_1.default.keyCodes.includes(65 /* A */)) {
+            this.move(2 /* LEFT */);
+        }
+        if (keyboard_1.default.keyCodes.includes(40 /* ARROW_DOWN */) || keyboard_1.default.keyCodes.includes(83 /* S */)) {
+            this.move(1 /* DOWN */);
+        }
+        if (keyboard_1.default.keyCodes.includes(39 /* ARROW_RIGHT */) || keyboard_1.default.keyCodes.includes(68 /* D */)) {
+            this.move(3 /* RIGHT */);
+        }
+    };
+    Player.prototype.onMouseTick = function () {
+        if (mouse_1.default.movementX > 0) {
+            this.move(3 /* RIGHT */);
+        }
+        else if (mouse_1.default.movementX < 0) {
+            this.move(2 /* LEFT */);
+        }
+    };
+    Player.prototype.attack = function () {
+        if (window.isMobile) {
+            this.camera.gunOffset = 150; // mobile
+        }
+        else {
+            this.camera.gunOffset = 200; // desktop
+        }
+        for (var i = 0; i < this.level.npcs.length; i++) {
+            var n = this.level.npcs[i];
+            var d = vector2_1.default.distance(this.position, n.position);
+            if (d < 1 && !n.corpse && !n.destroyed) {
+                n.destroy();
+                break;
+            }
+        }
+    };
+    Player.prototype.updateTouchControls = function () {
+        if (!window.isMobile || !touch_1.default.active) {
+            return;
+        }
+        var rotationFactor;
+        var maxDistance = 100;
+        var distanceFactor = (touch_1.default.distance / maxDistance);
+        if (distanceFactor > 1) {
+            distanceFactor = 1;
+        }
+        var r = touch_1.default.rotation;
+        var nw = r >= Math.PI && r <= Math.PI * 3 / 2;
+        var ne = r >= Math.PI * 3 / 2 && r <= Math.PI * 2;
+        var sw = r >= Math.PI / 2 && r <= Math.PI;
+        var se = r >= 0 && r <= Math.PI / 2;
+        if (nw || ne) {
+            this.move(0 /* UP */, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
+        }
+        else if (sw || se) {
+            this.move(1 /* DOWN */, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
+        }
+        // чтобы не дёргать камеру при смене направления
+        if (nw || ne) {
+            rotationFactor = Math.abs(Math.PI * 3 / 2 - r);
+        }
+        else if (sw || se) {
+            rotationFactor = Math.abs(Math.PI / 2 - r);
+        }
+        if (nw || sw) {
+            this.move(2 /* LEFT */, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor * rotationFactor);
+        }
+        else if (ne || se) {
+            this.move(3 /* RIGHT */, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor * rotationFactor);
+        }
+    };
+    // возвращаем камеру после ходьбы в нормальное положение
+    Player.prototype.nullifyHeightOffset = function () {
+        if (this.isMoving) {
+            return;
+        }
+        this.camera.heightOffset = Math.trunc(this.camera.heightOffset);
+        if (this.camera.heightOffset > this.noddlingStabilizationSpeed) {
+            this.camera.heightOffset -= this.noddlingStabilizationSpeed;
+        }
+        else if (this.camera.heightOffset < -this.noddlingStabilizationSpeed) {
+            this.camera.heightOffset += this.noddlingStabilizationSpeed;
+        }
+    };
+    return Player;
+}());
+exports.default = Player;
+
+
+/***/ }),
+
+/***/ "./src/game/walls-data.ts":
+/*!********************************!*\
+  !*** ./src/game/walls-data.ts ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var color_1 = __webpack_require__(/*! ../engine/math/color */ "./src/engine/math/color.ts");
+;
+var WALLS_DATA = [
+    {
+        name: 'air',
+        code: 0 /* AIR */,
+        color: new color_1.default(0, 0, 0, 0)
+    },
+    {
+        name: 'wall-1',
+        code: 1 /* ONE */,
+        color: new color_1.default(0, 0, 0, 255)
+    },
+    {
+        name: 'wall-2',
+        code: 2 /* TWO */,
+        color: new color_1.default(255, 0, 0, 255)
+    },
+    {
+        name: 'wall-3',
+        code: 3 /* THREE */,
+        color: new color_1.default(255, 0, 0, 255)
+    },
+    {
+        name: 'wall-4',
+        code: 4 /* FOUR */,
+        color: new color_1.default(255, 0, 0, 255)
+    },
+    {
+        name: 'wall-5',
+        code: 5 /* FIVE */,
+        color: new color_1.default(255, 0, 0, 255)
+    },
+    {
+        name: 'wall-6',
+        code: 6 /* SIX */,
+        color: new color_1.default(255, 0, 0, 255)
+    }
+];
+exports.WALLS_DATA = WALLS_DATA;
+
+
+/***/ }),
+
+/***/ "./src/izdelie-27.ts":
+/*!***************************!*\
+  !*** ./src/izdelie-27.ts ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = __webpack_require__(/*! ./config */ "./src/config.ts");
+var assets_1 = __webpack_require__(/*! ./assets */ "./src/assets.ts");
+var tick_1 = __webpack_require__(/*! ./engine/tick */ "./src/engine/tick.ts");
+var resize_1 = __webpack_require__(/*! ./engine/platform/resize */ "./src/engine/platform/resize.ts");
+var canvas_1 = __webpack_require__(/*! ./engine/platform/canvas */ "./src/engine/platform/canvas.ts");
+var keyboard_1 = __webpack_require__(/*! ./engine/platform/keyboard */ "./src/engine/platform/keyboard.ts");
+var mouse_1 = __webpack_require__(/*! ./engine/platform/mouse */ "./src/engine/platform/mouse.ts");
+var touch_1 = __webpack_require__(/*! ./engine/platform/touch */ "./src/engine/platform/touch.ts");
+var vector2_1 = __webpack_require__(/*! ./engine/math/vector2 */ "./src/engine/math/vector2.ts");
+var camera_1 = __webpack_require__(/*! ./engine/render/camera */ "./src/engine/render/camera.ts");
+var level_1 = __webpack_require__(/*! ./engine/level */ "./src/engine/level.ts");
+var player_1 = __webpack_require__(/*! ./game/player */ "./src/game/player.ts");
+var bitmap_1 = __webpack_require__(/*! ./engine/render/bitmap */ "./src/engine/render/bitmap.ts");
+var npc_1 = __webpack_require__(/*! ./game/npc */ "./src/game/npc.ts");
+load(init);
+var music, camera, player, level;
+function spawnRandomNPC(level) {
+    var count = 3;
+    var r = Math.floor(Math.random() * (count - 0 + 1) + 0);
+    switch (r) {
+        case 0:
+            return new npc_1.default(assets_1.default.TEXTURES['daemon-1'].bitmap, new vector2_1.default(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())), level, 1, 64);
+        case 1:
+            return new npc_1.default(assets_1.default.TEXTURES['daemon-2'].bitmap, new vector2_1.default(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())), level, 1, 64);
+        case 2:
+            return new npc_1.default(assets_1.default.TEXTURES['daemon-3'].bitmap, new vector2_1.default(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())), level, 10, 200);
+        case 3:
+            return new npc_1.default(assets_1.default.TEXTURES['daemon-4'].bitmap, new vector2_1.default(Math.ceil(level.size * Math.random()), Math.ceil(level.size * Math.random())), level, 4, 48);
+    }
+}
+function restart() {
+    level.randomize();
+    player.position.x = level.size / 2;
+    player.position.y = level.size / 2;
+    camera.position = player.position;
+    camera.rotation = player.rotation;
+    window.sound.seek(0, music);
+    level.npcs.forEach(function (n) { n.destroy(true); });
+    level.npcs.length = 0;
+    level.sprites.length = 0;
+    setTimeout(function () {
+        window.kills = 0;
+        document.querySelector('#count').textContent = window.kills;
+    }, 2500);
+}
+function init() {
+    assets_1.default.MAP_BITMAP = assets_1.default.TEXTURES['map'].bitmap;
+    level = new level_1.default(0, null, [], assets_1.default.TEXTURES['skybox'].bitmap, false);
+    level.parseFromBitmap(assets_1.default.MAP_BITMAP);
+    level.randomize();
+    camera = new camera_1.default(level);
+    player = new player_1.default(camera, level, new vector2_1.default(level.size / 2, level.size / 2), Math.PI / -2);
+    // let minimap = new Minimap(level, camera, new Vector2(1, 1));
+    camera.position = player.position;
+    camera.rotation = player.rotation;
+    level.player = player;
+    // ////////
+    // отнятие жизни ещё вернуть
+    var testNPC = new npc_1.default(assets_1.default.TEXTURES['daemon-1'].bitmap, new vector2_1.default(player.position.x, player.position.y - 2), level, 1, 64);
+    // console.log(ASSETS, level, player, camera);
+    keyboard_1.initKeyboard();
+    keyboard_1.addKeyboardListener(player.onKeyboardTick.bind(player));
+    mouse_1.initMouse();
+    // addMouseListener(player.onMouseTick.bind(player));
+    tick_1.default(function () {
+        camera.render();
+        // minimap.render();
+        player.update();
+        level.update();
+        var musicValue = 1 + (1 - player.health / 100) * 50;
+        window.sound.volume(musicValue, music);
+        if (window.isMobile) {
+            camera.fov += Math.cos(Date.now() / 1000) / 450;
+        }
+        else {
+            camera.fov += Math.cos(Date.now() / 400) / 175;
+        }
+        if (Math.random() < config_1.default.NPC_SPAWN_CHANGE) {
+            // spawnRandomNPC(level);///////////////////////////////
+        }
+    });
+    setInterval(function () {
+        config_1.default.NPC_SPAWN_CHANGE *= 1.25;
+    }, 2500);
+    window.addEventListener('resize', resize_1.default.bind(this, canvas_1.canvas, camera));
+    window.addEventListener('keyup', function (event) {
+        switch (event.keyCode) {
+            case 32: // space
+                player.attack();
+                break;
+            case 82: // R
+                restart();
+                break;
+        }
+    });
+    resize_1.default(canvas_1.canvas, camera);
+    window.isMobile = window.checkIsMobile();
+    if (window.isMobile) {
+        camera.fov = Math.PI / 5;
+        player.moveSpeed /= 1.5;
+        player.rotateSpeed /= 1.5;
+        setInterval(function () {
+            player.attack();
+        }, 200);
+        window.addEventListener('touchstart', touch_1.touchstart);
+        window.addEventListener('touchmove', touch_1.touchmove);
+        window.addEventListener('touchend', touch_1.touchend);
+        window.addEventListener('touchcancel', touch_1.touchend);
+    }
+}
+;
+function load(callback) {
+    var promises = [];
+    var texturesNames = Object.keys(assets_1.default.TEXTURES);
+    texturesNames.forEach(function (name) {
+        promises.push(new Promise(function (resolve, reject) {
+            var url = "" + assets_1.default.FOLDER_URL + name + ".png";
+            var image = new Image();
+            image.addEventListener('load', function () {
+                assets_1.default.TEXTURES[name].bitmap = new bitmap_1.default(image);
+                resolve(image);
+            });
+            image.addEventListener('error', function () {
+                reject(new Error("\u041D\u0435 \u043F\u043E\u043B\u0443\u0447\u0438\u043B\u043E\u0441\u044C \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044C \u043A\u0430\u0440\u0442\u0438\u043D\u043A\u0443: " + url));
+            });
+            image.src = "" + assets_1.default.FOLDER_URL + name + ".png";
+        }));
+        // TODO: использовать для загрузки звуков
+        // promises.push(
+        //   fetch(`${ ASSETS.FOLDER_URL }${ name }.png`)
+        //     .then(response => {
+        //       if (response.ok) {
+        //         return response.blob();
+        //       } else {
+        //         throw new Error(`${ name } не загрузился :(`);
+        //       };
+        //     })
+        //     .then(blob => {
+        //       let image = new Image();
+        //       image.src = URL.createObjectURL(blob);
+        //       image.onload = () => {
+        //         ASSETS.TEXTURES[name].bitmap = new Bitmap(image);            
+        //       };
+        //     })
+        //     .catch(e => {
+        //       throw new Error(e);
+        //     })
+        // );
+    });
+    Promise.all(promises).then(callback);
+}
+window.sound = new window.Howl({
+    src: ['./assets/sound.mp3'],
+    sprite: {
+        scream1: [0, 760],
+        scream2: [1160, 560],
+        scream3: [2240, 2800],
+        scream4: [5520, 2320],
+        scream5: [8440, 3000],
+        scream6: [12040, 3920],
+        scream7: [16640, 1400],
+        music: [19190, 739880, true],
+    },
+    volume: 1
+});
+music = window.sound.play('music');
+window.checkIsMobile = function () {
+    var check = false;
+    (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))
+        check = true; })(navigator.userAgent || navigator.vendor || window.opera);
+    return check;
+};
+window.restart = restart;
+setTimeout(function () {
+    document.querySelector('#author').style.display = 'none';
+    document.querySelector('#title').style.display = 'block';
+    // }, 4000);
+}, 100);
+setTimeout(function () {
+    document.querySelector('#title').style.display = 'none';
+    document.querySelector('#manual').style.display = 'block';
+    // }, 8000);
+}, 200);
+setTimeout(function () {
+    document.querySelector('#manual').style.display = 'none';
+    document.querySelector('#text').style.display = 'none';
+    // }, 17000);
+}, 300);
+
+
+/***/ }),
+
+/***/ 0:
+/*!*********************************!*\
+  !*** multi ./src/izdelie-27.ts ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! /Users/upisfree/p/ld45/src/izdelie-27.ts */"./src/izdelie-27.ts");
+
+
+/***/ })
+
+/******/ });
+//# sourceMappingURL=izdelie-27.js.map
