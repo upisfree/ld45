@@ -360,6 +360,12 @@ class Camera {
       r += Angle.PI_2;
     }
 
+    let fov2 = this.fov / 2;
+
+    if (r <= -fov2 || r >= fov2) {
+      return;
+    }
+
     let startX = (r) * (this.ww) / (this.fov) + (this.ww) / 2 - width / 2;
     let endX = startX + width;
 
