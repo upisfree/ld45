@@ -174,6 +174,8 @@ class Player {
       return;
     }
 
+    let rotationFactor;
+
     let maxDistance = 100;
     let distanceFactor = (touch.distance / maxDistance);
 
@@ -196,10 +198,17 @@ class Player {
       this.move(DIRECTION.DOWN, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
     }
 
+    // чтобы не дёргать камеру при смене направления
+    if (nw || ne) {
+      rotationFactor = Math.abs(Math.PI * 3 / 2 - r);
+    } else if (sw || se) {
+      rotationFactor = Math.abs(Math.PI / 2 - r);
+    }
+
     if (nw || sw) {
-      this.move(DIRECTION.LEFT, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
+      this.move(DIRECTION.LEFT, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor * rotationFactor);
     } else if (ne || se) {
-      this.move(DIRECTION.RIGHT, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
+      this.move(DIRECTION.RIGHT, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor * rotationFactor);
     }
   }
 
