@@ -78,9 +78,12 @@ function restart() {
   level.npcs.length = 0;
   level.sprites.length = 0;
 
+  CONFIG.NPC_SPAWN_CHANGE = 0.02;
+
   setTimeout(() => {
     (<any>window).kills = 0;
-    document.querySelector('#count').textContent = (<any>window).kills;    
+    document.querySelector('#count').textContent = (<any>window).kills;
+    (<any>document.querySelector('#death')).style.display = 'none';
   }, 2500);
 }
 
@@ -99,17 +102,6 @@ function init() {
   camera.rotation = player.rotation;
 
   level.player = player;
-
-  // ////////
-  // отнятие жизни ещё вернуть
-
-  let testNPC = new NPC(
-    ASSETS.TEXTURES['daemon-1'].bitmap,
-    new Vector2(player.position.x, player.position.y - 2),
-    level,
-    1,
-    64
-  );
 
   // console.log(ASSETS, level, player, camera);
 
@@ -136,12 +128,12 @@ function init() {
     }
 
     if (Math.random() < CONFIG.NPC_SPAWN_CHANGE) {
-      // spawnRandomNPC(level);///////////////////////////////
+      spawnRandomNPC(level);
     }
   });
 
   setInterval(() => {
-    CONFIG.NPC_SPAWN_CHANGE *= 1.25;
+    CONFIG.NPC_SPAWN_CHANGE *= 1.1;
   }, 2500);
 
   window.addEventListener('resize', resize.bind(this, canvas, camera));

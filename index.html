@@ -30,8 +30,6 @@ canvas {
 }
 
 #count {
-  opacity: 0;
-
   position: absolute;
   font-size: 72pt;
   margin: 0;
@@ -78,6 +76,19 @@ canvas {
   display: none;
 }
 
+#death {
+  display: none;
+  position: absolute;
+  font-size: 200pt;
+  margin: 0;
+  padding: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  user-select: none;
+  color: rgba(255, 255, 255, 0.75);
+}
+
 @media only screen and (max-device-width: 740px) {
   #author {
     font-size: 18pt;
@@ -92,6 +103,10 @@ canvas {
     font-size: 14pt;
     margin: 12%;
   }
+
+  #death {
+    font-size: 70pt;
+  }
 }
     </style>
   </head>
@@ -99,6 +114,8 @@ canvas {
     <canvas id="render-output"></canvas>
 
     <h1 id="count">0</h1>
+
+    <h1 id="death">DEATH</h1>
 
     <div id="text">
       <h1 id="author" class="center">a Senya Pugach's game</h1>

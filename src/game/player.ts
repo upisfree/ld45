@@ -49,7 +49,8 @@ class Player {
     }
 
     if (this.health < 0) {
-      // (<any>window).restart(); ////////////////
+      (<any>document.querySelector('#death')).style.display = 'block';
+      (<any>window).restart();
     }
   }
 
@@ -183,8 +184,6 @@ class Player {
       distanceFactor = 1;
     }
 
-
-
     let r = touch.rotation;
 
     let nw = r >= Math.PI && r <= Math.PI * 3 / 2;
@@ -192,6 +191,7 @@ class Player {
     let sw = r >= Math.PI / 2 && r <= Math.PI;
     let se = r >= 0 && r <= Math.PI / 2;
 
+    // вперёд / назад
     if (nw || ne) {
       this.move(DIRECTION.UP, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
     } else if (sw || se) {
@@ -205,6 +205,7 @@ class Player {
       rotationFactor = Math.abs(Math.PI / 2 - r);
     }
 
+    // влево / вправо
     if (nw || sw) {
       this.move(DIRECTION.LEFT, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor * rotationFactor);
     } else if (ne || se) {

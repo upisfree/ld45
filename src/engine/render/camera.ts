@@ -118,7 +118,7 @@ class Camera {
     gl.drawRect(
       new Vector2(0, 0),
       new Vector2(this.ww, this.wh),
-      new Color(160 * Math.random(), 0, 0, a * 1)
+      new Color(160 * Math.random(), 0, 0, a * 4)
     );
   }
 

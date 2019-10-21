@@ -147,7 +147,7 @@ var CONFIG = {
     FOG_COLOR: new color_1.default(0, 0, 0),
     FOG_FACTOR: 1,
     LIGHTING_FAKE_CONTRAST: true,
-    NPC_SPAWN_CHANGE: 0.01
+    NPC_SPAWN_CHANGE: 0.02
 };
 exports.default = CONFIG;
 
@@ -752,7 +752,7 @@ var Camera = /** @class */ (function () {
     };
     Camera.prototype.postProcess = function () {
         var a = 255 - this.level.player.health / 100 * 255;
-        gl_1.default.drawRect(new vector2_1.default(0, 0), new vector2_1.default(this.ww, this.wh), new color_1.default(160 * Math.random(), 0, 0, a * 1));
+        gl_1.default.drawRect(new vector2_1.default(0, 0), new vector2_1.default(this.ww, this.wh), new color_1.default(160 * Math.random(), 0, 0, a * 4));
     };
     // private renderFloor(): void {
     //   // TODO: в один луп пробежку по лучам
@@ -1293,7 +1293,7 @@ var NPC = /** @class */ (function (_super) {
     NPC.prototype.onCollision = function (trigger) {
         this.collisionWith = trigger;
         if (!this.corpse && !this.destroyed) {
-            this.level.player.health -= 1;
+            this.level.player.health -= 2.25;
         }
     };
     return NPC;
@@ -1344,7 +1344,8 @@ var Player = /** @class */ (function () {
             this.health = 100;
         }
         if (this.health < 0) {
-            // (<any>window).restart(); ////////////////
+            document.querySelector('#death').style.display = 'block';
+            window.restart();
         }
     };
     Player.prototype.move = function (direction, moveSpeed, rotateSpeed) {
@@ -1454,6 +1455,7 @@ var Player = /** @class */ (function () {
         var ne = r >= Math.PI * 3 / 2 && r <= Math.PI * 2;
         var sw = r >= Math.PI / 2 && r <= Math.PI;
         var se = r >= 0 && r <= Math.PI / 2;
+        // вперёд / назад
         if (nw || ne) {
             this.move(0 /* UP */, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
         }
@@ -1467,6 +1469,7 @@ var Player = /** @class */ (function () {
         else if (sw || se) {
             rotationFactor = Math.abs(Math.PI / 2 - r);
         }
+        // влево / вправо
         if (nw || sw) {
             this.move(2 /* LEFT */, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor * rotationFactor);
         }
@@ -1598,9 +1601,11 @@ function restart() {
     level.npcs.forEach(function (n) { n.destroy(true); });
     level.npcs.length = 0;
     level.sprites.length = 0;
+    config_1.default.NPC_SPAWN_CHANGE = 0.02;
     setTimeout(function () {
         window.kills = 0;
         document.querySelector('#count').textContent = window.kills;
+        document.querySelector('#death').style.display = 'none';
     }, 2500);
 }
 function init() {
@@ -1614,9 +1619,6 @@ function init() {
     camera.position = player.position;
     camera.rotation = player.rotation;
     level.player = player;
-    // ////////
-    // отнятие жизни ещё вернуть
-    var testNPC = new npc_1.default(assets_1.default.TEXTURES['daemon-1'].bitmap, new vector2_1.default(player.position.x, player.position.y - 2), level, 1, 64);
     // console.log(ASSETS, level, player, camera);
     keyboard_1.initKeyboard();
     keyboard_1.addKeyboardListener(player.onKeyboardTick.bind(player));
@@ -1636,11 +1638,11 @@ function init() {
             camera.fov += Math.cos(Date.now() / 400) / 175;
         }
         if (Math.random() < config_1.default.NPC_SPAWN_CHANGE) {
-            // spawnRandomNPC(level);///////////////////////////////
+            spawnRandomNPC(level);
         }
     });
     setInterval(function () {
-        config_1.default.NPC_SPAWN_CHANGE *= 1.25;
+        config_1.default.NPC_SPAWN_CHANGE *= 1.1;
     }, 2500);
     window.addEventListener('resize', resize_1.default.bind(this, canvas_1.canvas, camera));
     window.addEventListener('keyup', function (event) {
