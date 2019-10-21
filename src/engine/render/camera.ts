@@ -12,6 +12,7 @@ import Sprite from './sprite';
 import { CARDINAL } from '../const';
 import { canvas } from '../platform/canvas';
 import { WALL_TYPE } from '../../game/walls-data';
+import touch from '../platform/touch';
 
 export interface Ray {
   a: Vector2;
@@ -67,6 +68,10 @@ class Camera {
     // this.renderZBuffer();
 
     this.postProcess();
+
+    if ((<any>window).isMobile) {
+      this.renderTouchControls();      
+    }
   }
 
   private renderGun(): void {
@@ -360,6 +365,7 @@ class Camera {
       r += Angle.PI_2;
     }
 
+    // не рисуем спрайты, которые не в поле зрения камеры
     let fov2 = this.fov / 2;
 
     if (r <= -fov2 || r >= fov2) {
@@ -470,6 +476,16 @@ class Camera {
       new Vector2(this.ww, h),
       new Color(0, 0, 0, Math.random() * 256)
     );
+  }
+
+  private renderTouchControls() {
+    let d = touch.distance;
+
+    if (d > 100) {
+      d = 100;
+    }
+
+    gl.drawArc(touch.start, d, 10, new Color(255, 255, 255, 128));
   }
 
   private renderZBuffer(): void {

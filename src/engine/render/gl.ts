@@ -1,5 +1,6 @@
 import { canvas, context } from '../platform/canvas';
 import Vector2 from '../math/vector2';
+import Angle from '../math/angle';
 import Color from '../math/color';
 import Bitmap from './bitmap';
 
@@ -40,6 +41,34 @@ namespace gl {
 
     context.restore();
   }
+
+  // рисует не fill, а stroke
+  export function drawArc(
+    position: Vector2,
+    radius: number,
+    thickness: number,
+    color: Color | CanvasGradient | string
+  ): void {
+    context.save();
+
+    context.beginPath();
+
+    if (color instanceof Color) {
+      color = color.getRGBAString();
+    };
+
+    context.lineWidth = thickness;
+    context.strokeStyle = color;
+
+    context.arc(position.x, position.y, radius, 0, Angle.PI_2);
+
+    context.stroke();
+
+    context.closePath();
+
+    context.restore();
+  }
+
   export function drawImage(
     bitmap: Bitmap,
     bitmapPosition: Vector2,

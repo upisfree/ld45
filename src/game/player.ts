@@ -7,6 +7,7 @@ import ASSETS from '../assets';
 import Level from '../engine/level';
 import keyboard from '../engine/platform/keyboard';
 import mouse from '../engine/platform/mouse';
+import touch from '../engine/platform/touch';
 
 class Player {
   camera: Camera;
@@ -41,16 +42,18 @@ class Player {
     this.isMoving = false;
     this.health += 1;
     
+    this.updateTouchControls();
+
     if (this.health > 100) {
       this.health = 100;
     }
 
     if (this.health < 0) {
-      // (<any>window).restart();
+      // (<any>window).restart(); ////////////////
     }
   }
 
-  move(direction: DIRECTION): void {
+  move(direction: DIRECTION, moveSpeed = this.moveSpeed, rotateSpeed = this.rotateSpeed): void {
     let p = this.position;
     let distanceX;
     let distanceY;
@@ -63,8 +66,8 @@ class Player {
 
     switch (direction) {
       case DIRECTION.UP:
-        distanceX = this.moveSpeed * Math.cos(this.rotation);
-        distanceY = this.moveSpeed * Math.sin(this.rotation);
+        distanceX = moveSpeed * Math.cos(this.rotation);
+        distanceY = moveSpeed * Math.sin(this.rotation);
         collisionX = this.level.isNotCollision(new Vector2(p.x + distanceX, p.y));
         collisionY = this.level.isNotCollision(new Vector2(p.x, p.y + distanceY));
 
@@ -83,13 +86,13 @@ class Player {
         break;
 
       case DIRECTION.LEFT:
-        this.rotation -= this.rotateSpeed;
+        this.rotation -= rotateSpeed;
 
         break;
 
       case DIRECTION.DOWN:
-        distanceX = this.moveSpeed * Math.cos(this.rotation);
-        distanceY = this.moveSpeed * Math.sin(this.rotation);
+        distanceX = moveSpeed * Math.cos(this.rotation);
+        distanceY = moveSpeed * Math.sin(this.rotation);
         collisionX = this.level.isNotCollision(new Vector2(p.x - distanceX, p.y));
         collisionY = this.level.isNotCollision(new Vector2(p.x, p.y - distanceY));
 
@@ -108,7 +111,7 @@ class Player {
         break;
 
       case DIRECTION.RIGHT:
-        this.rotation += this.rotateSpeed;
+        this.rotation += rotateSpeed;
 
         break;
     }
@@ -163,6 +166,40 @@ class Player {
 
         break;
       }
+    }
+  }
+
+  updateTouchControls() {
+    if (!(<any>window).isMobile || !touch.active) {
+      return;
+    }
+
+    let maxDistance = 100;
+    let distanceFactor = (touch.distance / maxDistance);
+
+    if (distanceFactor > 1) {
+      distanceFactor = 1;
+    }
+
+
+
+    let r = touch.rotation;
+
+    let nw = r >= Math.PI && r <= Math.PI * 3 / 2;
+    let ne = r >= Math.PI * 3 / 2 && r <= Math.PI * 2;
+    let sw = r >= Math.PI / 2 && r <= Math.PI;
+    let se = r >= 0 && r <= Math.PI / 2;
+
+    if (nw || ne) {
+      this.move(DIRECTION.UP, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
+    } else if (sw || se) {
+      this.move(DIRECTION.DOWN, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
+    }
+
+    if (nw || sw) {
+      this.move(DIRECTION.LEFT, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
+    } else if (ne || se) {
+      this.move(DIRECTION.RIGHT, this.moveSpeed * distanceFactor, this.rotateSpeed * distanceFactor);
     }
   }
 
